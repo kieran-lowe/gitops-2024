@@ -1,0 +1,4 @@
+name: Bug Report
+about: Use this form to raise an bug report with the repo
+labels: ["bug, new"]
+title: "[Bug] - "
