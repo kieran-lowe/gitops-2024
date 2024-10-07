@@ -1,0 +1,46 @@
+name: tofu-checks
+
+on:
+    pull_request:
+        branches: [ "main" ]
+    workflow_dispatch: {}
+
+jobs:
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+        with:
+            ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Configure OpenTofu
+        uses: opentofu/setup-opentofu@v1
+
+      - name: Print Tofu Version
+        run: tofu --version
+
+      - name: Tofu Format Check
+        run: tofu fmt --check
+
+
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+        with:
+            ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Configure OpenTofu
+        uses: opentofu/setup-opentofu@v1
+
+      - name: Print Tofu Version
+        run: tofu --version
+        working-directory: ${{ github.workspace }}/tofu
+
+      - name: Tofu Validate
+        run: |
+          tofu init --backend=false
+          tofu validate
+        working-directory: ${{ github.workspace }}/tofu

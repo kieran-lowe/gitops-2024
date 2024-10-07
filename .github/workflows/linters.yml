@@ -11,7 +11,6 @@ jobs:
       - name: Run Markdownlint
         uses: DavidAnson/markdownlint-cli2-action@v17
         with:
-          config: .github/markdownlint.yml
           globs: '**/*.md'
 
   tflint:
@@ -25,7 +24,7 @@ jobs:
         with:
           tflint_version: latest
 
-      - name: Run TFLint
+      - name: Print TFLint Version
         run: tflint --version
 
       - name: Init TFLint
@@ -33,3 +32,7 @@ jobs:
         env:
           # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
           GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Run TFLint
+        run: tflint .
+        working-directory: ${{ github.workspace }}/tofu
