@@ -1,0 +1,36 @@
+name: sast
+
+on:
+    pull_request:
+        branches: [ "main" ]
+    workflow_dispatch: {}
+
+jobs:
+  checkov:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+        with:
+            ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: 'terraform/'
+
+  trivy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+        with:
+            ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Run Trivy 
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          scan-ref: '/terraform'
+          scan-type: 'config'
+          hide-progress: true
+          exit-code: '1'
