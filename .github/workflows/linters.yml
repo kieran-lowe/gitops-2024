@@ -1,0 +1,35 @@
+name: linters
+on:
+  workflow_dispatch: {}
+jobs:
+  markdownlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+
+      - name: Run Markdownlint
+        uses: DavidAnson/markdownlint-cli2-action@v17
+        with:
+          config: .github/markdownlint.yml
+          globs: '**/*.md'
+
+  tflint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: latest
+
+      - name: Run TFLint
+        run: tflint --version
+
+      - name: Init TFLint
+        run: tflint --init
+        env:
+          # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
+          GITHUB_TOKEN: ${{ github.token }}
