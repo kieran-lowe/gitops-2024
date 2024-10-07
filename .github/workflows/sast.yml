@@ -17,7 +17,7 @@ jobs:
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@v12
         with:
-          directory: 'terraform/'
+          directory: 'tofu/'
 
   trivy:
     runs-on: ubuntu-latest
@@ -30,6 +30,6 @@ jobs:
       - name: Run Trivy 
         uses: aquasecurity/trivy-action@0.20.0
         with:
-          scan-ref: 'terraform/'
+          scan-ref: 'tofu/'
           scan-type: 'config'
           exit-code: '1'
