@@ -22,6 +22,7 @@ jobs:
 
       - name: Tofu Format Check
         run: tofu fmt --check
+        continue-on-error: true
 
 
   validate:

@@ -1,9 +1,19 @@
 name: sast
 
 on:
-    pull_request:
-        branches: [ "main" ]
-    workflow_dispatch: {}
+  workflow_call:
+    inputs:
+      directory:
+          type: string
+          required: false
+          description: 'The directory to run the tools in i.e. where your Terraform code is located'
+          default: '/tofu'
+
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ${{ inputs.directory }}
 
 jobs:
   checkov:
@@ -16,9 +26,6 @@ jobs:
 
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@v12
-        with:
-          directory: 'tofu/'
-
   trivy:
     runs-on: ubuntu-latest
     steps:
@@ -30,6 +37,5 @@ jobs:
       - name: Run Trivy 
         uses: aquasecurity/trivy-action@0.20.0
         with:
-          scan-ref: 'tofu/'
           scan-type: 'config'
           exit-code: '1'
