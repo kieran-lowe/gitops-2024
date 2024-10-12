@@ -1,0 +1,31 @@
+default: true # Enable all rules by default
+
+# Rules
+# MD003: Header style
+MD003:
+  style: atx
+
+# MD004: Unordered list style
+MD004:
+  style: dash
+
+# MD035: Horizontal rule style
+MD035:
+  # Horizontal rule style
+  style: ---
+
+MD046:
+  # Block style
+  style: fenced
+
+MD048:
+  # Code fence style
+  style: backtick
+
+MD049:
+  # Emphasis style
+  style: asterisk
+
+MD050:
+  # Strong style
+  style: underscore

@@ -1,0 +1,4 @@
+gitignore: true # Don't lint files in .gitignore
+
+globs:
+  - "**/*.md"
