@@ -9,6 +9,12 @@ MD003:
 MD004:
   style: dash
 
+MD013: false
+
+MD033:
+  allowed_elements:
+    - a
+
 # MD035: Horizontal rule style
 MD035:
   # Horizontal rule style
