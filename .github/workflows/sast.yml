@@ -35,7 +35,7 @@ jobs:
             ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Run Trivy 
-        uses: aquasecurity/trivy-action@0.20.0
+        uses: aquasecurity/trivy-action@0.27.0
         with:
           scan-type: 'config'
           exit-code: '1'
