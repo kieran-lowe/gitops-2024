@@ -19,24 +19,44 @@ jobs:
   tofu-checks:
     runs-on: ubuntu-latest
     steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+        with:
+            ref: ${{ github.event.pull_request.head.ref }}
+
       - name: Run Checks
         uses: ./.github/workflows/tofu_checks.yml
 
   sast-checks:
     runs-on: ubuntu-latest
     steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+        with:
+            ref: ${{ github.event.pull_request.head.ref }}
+
       - name: Run SAST Checks
         uses: ./.github/workflows/sast_checks.yml
 
   lint-checks:
     runs-on: ubuntu-latest
     steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+        with:
+            ref: ${{ github.event.pull_request.head.ref }}
+
       - name: Run Lint Checks
         uses: ./.github/workflows/linters.yml
   
   tofu-plan:
     runs-on: ubuntu-latest
     steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+        with:
+            ref: ${{ github.event.pull_request.head.ref }}
+
       - name: Tofu Plan
         uses: ./.github/workflows/tofu_plan.yml
         with:
@@ -52,6 +72,11 @@ jobs:
       - lint-checks
     runs-on: ubuntu-latest
     steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+        with:
+            ref: ${{ github.event.pull_request.head.ref }}
+            
       - name: Tofu Apply
         uses: ./.github/workflows/tofu_apply.yml
         with:
