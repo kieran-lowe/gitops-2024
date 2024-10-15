@@ -20,25 +20,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Checks
-        uses: ./tofu_checks.yml
+        uses: ./.github/workflows/tofu_checks.yml
 
   sast-checks:
     runs-on: ubuntu-latest
     steps:
       - name: Run SAST Checks
-        uses: ./sast_checks.yml
+        uses: ./.github/workflows/sast_checks.yml
 
   lint-checks:
     runs-on: ubuntu-latest
     steps:
       - name: Run Lint Checks
-        uses: ./linters.yml
+        uses: ./.github/workflows/linters.yml
   
   tofu-plan:
     runs-on: ubuntu-latest
     steps:
       - name: Tofu Plan
-        uses: ./tofu_plan.yml
+        uses: ./.github/workflows/tofu_plan.yml
         with:
           runner: ubuntu-latest
           environment: dev
@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Tofu Apply
-        uses: ./tofu_apply.yml
+        uses: ./.github/workflows/tofu_apply.yml
         with:
           runner: ubuntu-latest
           environment: dev
