@@ -1,4 +1,4 @@
-name: linters
+name: linter_checks
 on:
   workflow_call:
 jobs:

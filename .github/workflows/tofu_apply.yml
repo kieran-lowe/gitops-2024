@@ -1,0 +1,49 @@
+name: Tofu Apply
+
+on:
+  workflow_call:
+    inputs:
+      runner:
+        type: string
+        description: 'The runner type to run the Action on'
+        required: false
+        default: "ubuntu-latest"
+      environment:
+        type: string
+        description: 'The environment associated with the infrastructure'
+        required: true
+      gh_environment:
+        type: string
+        description: 'The environment to run the Action in'
+        required: true
+
+defaults:
+  run:
+    shell: bash
+    
+jobs:
+  apply:
+    runs-on: ${{ inputs.runner }}
+    environment: 
+      name: ${{ inputs.gh_environment }}
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+        with:
+            ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Configure OpenTofu
+        uses: opentofu/setup-opentofu@v1
+
+      - name: Print Tofu Version
+        run: tofu --version
+
+      - name: Get OIDC Token File
+        run: |
+          curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r .value > /tmp/web-identity-token
+
+      - name: Tofu Init
+        run: tofu init --backend-config="key=${{ github.event.repository.name }}/${{ inputs.environment }}/terraform.tfstate"
+  
+      - name: Tofu Plan
+        run: tofu apply --auto-approve

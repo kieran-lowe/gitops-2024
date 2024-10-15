@@ -1,4 +1,4 @@
-name: sast
+name: sast_checks
 
 on:
   workflow_call:
