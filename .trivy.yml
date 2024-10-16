@@ -1,0 +1,3 @@
+quiet: true
+misconfiguration:
+  include-non-failures: false

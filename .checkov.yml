@@ -1,0 +1,7 @@
+compact: true # Show check details, no code block
+directory:
+  - tofu/
+framework:
+  - terraform 
+quiet: true # Show only fails
+soft-fail: false # If fails error the step
