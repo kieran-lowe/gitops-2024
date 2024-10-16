@@ -20,7 +20,7 @@ jobs:
 
       - name: Tofu Format Check
         run: tofu fmt --check
-        continue-on-error: true
+        working-directory: ${{ github.workspace }}/tofu
 
 
   validate:
@@ -38,8 +38,10 @@ jobs:
         run: tofu --version
         working-directory: ${{ github.workspace }}/tofu
 
+      - name: Tofu Init
+        run: tofu init --backend=false
+        working-directory: ${{ github.workspace }}/tofu
+
       - name: Tofu Validate
-        run: |
-          tofu init --backend=false
-          tofu validate
+        run: tofu validate
         working-directory: ${{ github.workspace }}/tofu
