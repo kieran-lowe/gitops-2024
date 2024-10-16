@@ -50,7 +50,7 @@ jobs:
         uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
-          PLAN: "tofu\n${{ steps.plan.outputs.stdout }}"
+          PLAN: "${{ steps.plan.outputs.stdout }}"
         with:
           script: |
             // 1. Retrieve existing bot comments for the PR
@@ -60,22 +60,11 @@ jobs:
               issue_number: context.issue.number,
             })
             const botComment = comments.find(comment => {
-              return comment.user.type === 'Bot' && comment.body.includes('OpenTofu Format and Style')
+              return comment.user.type === 'Bot' && comment.body.includes('OpenTofu Plan')
             })
       
             // 2. Prepare format of the comment
-            const output = `#### OpenTofu Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-            #### OpenTofu Initialization ⚙️\`${{ steps.init.outcome }}\`
-            #### OpenTofu Validation 🤖\`${{ steps.validate.outcome }}\`
-            <details><summary>Validation Output</summary>
-      
-            \`\`\`\n
-            ${{ steps.validate.outputs.stdout }}
-            \`\`\`
-      
-            </details>
-      
-            #### OpenTofu Plan 📖\`${{ steps.plan.outcome }}\`
+            const output = `#### OpenTofu Plan 📖\`${{ steps.plan.outcome }}\``
       
             <details><summary>Show Plan</summary>
       
