@@ -1,5 +1,7 @@
-#checkov:skip=CKV2_AWS_41:Instance profile not required
+
 resource "aws_instance" "grafana_server" {
+  #checkov:skip=CKV2_AWS_41:Instance profile not required
+  
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   subnet_id              = aws_subnet.gitops_subnet.id
@@ -16,7 +18,7 @@ resource "aws_instance" "grafana_server" {
 
   root_block_device {
     volume_size = 10
-    encrypted = true
+    encrypted   = true
     tags = {
       Name = "grafana-server-root-volume"
     }

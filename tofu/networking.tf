@@ -1,5 +1,7 @@
-#checkov:skip=CKV2_AWS_11:Keeping costs low by staying in the free tier
+
 resource "aws_vpc" "gitops_vpc" {
+  #checkov:skip=CKV2_AWS_11:Keeping costs low by staying in the free tier
+  
   cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
@@ -31,8 +33,8 @@ resource "aws_route_table" "gitops_rt" {
 }
 
 resource "aws_subnet" "gitops_subnet" {
-  vpc_id                  = aws_vpc.gitops_vpc.id
-  cidr_block              = "10.0.1.0/24"
+  vpc_id     = aws_vpc.gitops_vpc.id
+  cidr_block = "10.0.1.0/24"
   #checkov:skip=CKV_AWS_130:Requirement of the GitOps bootcamp
   map_public_ip_on_launch = true
 
