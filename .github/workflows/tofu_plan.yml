@@ -2,19 +2,20 @@ name: Tofu Plan
 
 on:
   workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
 
 defaults:
   run:
     shell: bash
-
-env:
-  ENV: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
     
 jobs:
   plan:
     runs-on: ubuntu-latest
     environment: 
-      name: ${{ env.ENV }}
+      name: ${{ inputs.environment }}
     steps:
       - name: Check Out Code
         uses: actions/checkout@v4
