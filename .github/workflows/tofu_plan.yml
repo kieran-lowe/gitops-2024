@@ -14,8 +14,6 @@ defaults:
 jobs:
   plan:
     runs-on: ubuntu-latest
-    environment: 
-      name: ${{ inputs.environment }}
     steps:
       - name: Check Out Code
         uses: actions/checkout@v4
@@ -33,7 +31,7 @@ jobs:
           curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r .value > /tmp/web-identity-token
 
       - name: Tofu Init
-        run: tofu init --backend-config="key=${{ github.event.repository.name }}/${{ env.ENV }}/terraform.tfstate"
+        run: tofu init --backend-config="key=${{ github.event.repository.name }}/${{ inputs.environment }}/terraform.tfstate"
   
       - name: Tofu Plan
         id: plan

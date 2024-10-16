@@ -3,29 +3,20 @@ name: Tofu Apply
 on:
   workflow_call:
     inputs:
-      runner:
-        type: string
-        description: 'The runner type to run the Action on'
-        required: false
-        default: "ubuntu-latest"
       environment:
         type: string
         description: 'The environment associated with the infrastructure'
         required: true
-      gh_environment:
-        type: string
-        description: 'The environment to run the Action in'
-        required: true
-
+        
 defaults:
   run:
     shell: bash
     
 jobs:
   apply:
-    runs-on: ${{ inputs.runner }}
+    runs-on: ubuntu-latest
     environment: 
-      name: ${{ inputs.gh_environment }}
+      name: ${{ inputs.environment }}
     steps:
       - name: Check Out Code
         uses: actions/checkout@v4

@@ -23,6 +23,9 @@ jobs:
 
   linters:
     uses: ./.github/workflows/linters.yml
+
+  docs:
+    uses: ./.github/workflows/terraform-docs.yml
   
   tofu-plan:
     permissions:
