@@ -24,8 +24,18 @@ jobs:
   linters:
     uses: ./.github/workflows/linters.yml
 
-  docs:
-    uses: ./.github/workflows/terraform-docs.yml
+  terraform-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Generate TF Docs
+        uses: terraform-docs/gh-actions@v1.3.0
+        with:
+          working-dir: '${{ github.workspace }}/tofu'
   
   tofu-plan:
     permissions:
