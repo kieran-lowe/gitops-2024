@@ -44,6 +44,7 @@ jobs:
     uses: ./.github/workflows/tofu_plan.yml
     with:
       environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+      tf_var_file: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}.tfvars"
 
   # tofu-apply:
   #   needs:

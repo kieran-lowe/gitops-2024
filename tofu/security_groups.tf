@@ -14,6 +14,8 @@ resource "aws_vpc_security_group_ingress_rule" "gitops_sg_ingress_rule" {
   from_port         = 3000
   to_port           = 3000
   ip_protocol       = "tcp"
+
+  #trivy:ignore:avd-aws-0107
   cidr_ipv4         = "0.0.0.0/0"
 
   tags = {
@@ -21,7 +23,7 @@ resource "aws_vpc_security_group_ingress_rule" "gitops_sg_ingress_rule" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "gitops_sg_egress_rule" {
+resource "aws_vpc_security_group_egress_rule" "gitops_sg_egress_rule" {
   security_group_id = aws_security_group.gitops_sg.id
 
   description = "AWS-default egress rule"

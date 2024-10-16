@@ -1,7 +1,7 @@
 
 resource "aws_instance" "grafana_server" {
   #checkov:skip=CKV2_AWS_41:Instance profile not required
-  
+
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   subnet_id              = aws_subnet.gitops_subnet.id
