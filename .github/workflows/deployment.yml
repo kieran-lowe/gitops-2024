@@ -28,6 +28,8 @@ jobs:
     permissions:
       id-token: write
     uses: ./.github/workflows/tofu_plan.yml
+    with:
+      environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
 
   # tofu-apply:
   #   needs:
