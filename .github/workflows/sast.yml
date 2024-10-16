@@ -3,7 +3,6 @@ name: sast_checks
 on:
   workflow_call:
 
-
 defaults:
   run:
     shell: bash
@@ -19,6 +18,8 @@ jobs:
 
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@v12
+        with:
+          config_file: .checkov.yaml
   trivy:
     runs-on: ubuntu-latest
     steps:
@@ -30,5 +31,6 @@ jobs:
       - name: Run Trivy 
         uses: aquasecurity/trivy-action@0.27.0
         with:
+          trivy-config: .trivy.yml
           scan-type: 'config'
           exit-code: '1'
