@@ -2,18 +2,11 @@ name: sast_checks
 
 on:
   workflow_call:
-    inputs:
-      directory:
-          type: string
-          required: false
-          description: 'The directory to run the tools in i.e. where your Terraform code is located'
-          default: '/tofu'
 
 
 defaults:
   run:
     shell: bash
-    working-directory: ${{ inputs.directory }}
 
 jobs:
   checkov:
