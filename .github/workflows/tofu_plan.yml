@@ -32,10 +32,12 @@ jobs:
 
       - name: Tofu Init
         run: tofu init --backend-config="key=${{ github.event.repository.name }}/${{ inputs.environment }}/terraform.tfstate"
+        working-directory: ${{ github.workspace }}/tofu
   
       - name: Tofu Plan
         id: plan
         run: tofu plan
+        working-directory: ${{ github.workspace }}/tofu
 
       - name: Outplan Tofu Plan
         uses: actions/github-script@v6
@@ -94,3 +96,4 @@ jobs:
                 body: output
               })
             }
+
