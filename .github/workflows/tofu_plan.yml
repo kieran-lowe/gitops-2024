@@ -2,30 +2,19 @@ name: Tofu Plan
 
 on:
   workflow_call:
-    inputs:
-      runner:
-        type: string
-        description: 'The runner type to run the Action on'
-        required: false
-        default: "ubuntu-latest"
-      environment:
-        type: string
-        description: 'The environment associated with the infrastructure'
-        required: true
-      gh_environment:
-        type: string
-        description: 'The environment to run the Action in'
-        required: true
 
 defaults:
   run:
     shell: bash
+
+env:
+  ENV: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
     
 jobs:
   plan:
-    runs-on: ${{ inputs.runner }}
+    runs-on: ubuntu-latest
     environment: 
-      name: ${{ inputs.gh_environment }}
+      name: ${{ env.ENV }}
     steps:
       - name: Check Out Code
         uses: actions/checkout@v4
@@ -43,7 +32,7 @@ jobs:
           curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r .value > /tmp/web-identity-token
 
       - name: Tofu Init
-        run: tofu init --backend-config="key=${{ github.event.repository.name }}/${{ inputs.environment }}/terraform.tfstate"
+        run: tofu init --backend-config="key=${{ github.event.repository.name }}/${{ env.ENV }}/terraform.tfstate"
   
       - name: Tofu Plan
         id: plan
