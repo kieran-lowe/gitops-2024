@@ -64,8 +64,7 @@ jobs:
             })
       
             // 2. Prepare format of the comment
-            const output = `#### OpenTofu Plan 📖\`${{ steps.plan.outcome }}\``
-      
+            const output = `#### OpenTofu Plan \`${{ steps.plan.outcome }}\``
             <details><summary>Show Plan</summary>
       
             \`\`\`\n
