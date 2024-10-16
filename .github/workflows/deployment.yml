@@ -1,4 +1,4 @@
-name: Infrastructure Deployment
+name: Deployment
 
 on:
   pull_request:
@@ -9,77 +9,42 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 defaults:
   run:
     shell: bash
-    
+
 jobs:
   tofu-checks:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Code
-        uses: actions/checkout@v4
-        with:
-            ref: ${{ github.event.pull_request.head.ref }}
-
-      - name: Run Checks
-        uses: ./.github/workflows/tofu_checks.yml
+    uses: ./.github/workflows/tofu_checks.yml
 
   sast-checks:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Code
-        uses: actions/checkout@v4
-        with:
-            ref: ${{ github.event.pull_request.head.ref }}
+    uses: ./.github/workflows/sast.yml
 
-      - name: Run SAST Checks
-        uses: ./.github/workflows/sast_checks.yml
-
-  lint-checks:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Code
-        uses: actions/checkout@v4
-        with:
-            ref: ${{ github.event.pull_request.head.ref }}
-
-      - name: Run Lint Checks
-        uses: ./.github/workflows/linters.yml
+  linters:
+    uses: ./.github/workflows/linters.yml
   
   tofu-plan:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Code
-        uses: actions/checkout@v4
-        with:
-            ref: ${{ github.event.pull_request.head.ref }}
+    permissions:
+      id-token: write
+    uses: ./.github/workflows/tofu_plan.yml
 
-      - name: Tofu Plan
-        uses: ./.github/workflows/tofu_plan.yml
-        with:
-          runner: ubuntu-latest
-          environment: dev
-          gh_environment: dev-plan
-
-  tofu-apply:
-    needs:
-      - tofu-plan
-      - tofu-checks
-      - sast-checks
-      - lint-checks
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Code
-        uses: actions/checkout@v4
-        with:
-            ref: ${{ github.event.pull_request.head.ref }}
+  # tofu-apply:
+  #   needs:
+  #     - tofu-plan
+  #     - tofu-checks
+  #     - sast-checks
+  #     - linters
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check Out Code
+  #       uses: actions/checkout@v4
+  #       with:
+  #           ref: ${{ github.event.pull_request.head.ref }}
             
-      - name: Tofu Apply
-        uses: ./.github/workflows/tofu_apply.yml
-        with:
-          runner: ubuntu-latest
-          environment: dev
-          gh_environment: dev-apply
+  #     - name: Tofu Apply
+  #       uses: ./.github/workflows/tofu_apply.yml
+  #       with:
+  #         runner: ubuntu-latest
+  #         environment: dev
+  #         gh_environment: dev-apply
