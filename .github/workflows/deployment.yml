@@ -41,6 +41,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
+      pull-requests: write
     uses: ./.github/workflows/tofu_plan.yml
     with:
       environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
