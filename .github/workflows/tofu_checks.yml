@@ -58,7 +58,7 @@ jobs:
         run: tofu validate
         working-directory: ${{ github.workspace }}/tofu
 
-  tests:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Code
