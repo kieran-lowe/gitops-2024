@@ -11,7 +11,7 @@ run "instance_name_check" {
     }
   }
 
-  expect_failures = [ var.instances ]
+  expect_failures = [var.instances]
 
   command = plan
 }
