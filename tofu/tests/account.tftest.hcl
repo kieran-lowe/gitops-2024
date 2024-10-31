@@ -1,4 +1,4 @@
-run "is_dev_account" {
+run "deployment_account" {
   command = plan
 
   plan_options {
@@ -8,14 +8,6 @@ run "is_dev_account" {
   assert {
     condition     = var.environment == "dev" && data.aws_caller_identity.current.account_id == "954976300695"
     error_message = "Dev must be deployed to the 954976300695 account!"
-  }
-}
-
-run "is_prod_account" {
-  command = plan
-
-  plan_options {
-    refresh = false
   }
 
   assert {
