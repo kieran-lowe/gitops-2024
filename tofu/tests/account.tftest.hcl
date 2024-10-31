@@ -6,13 +6,8 @@ run "deployment_account" {
   }
 
   assert {
-    condition     = var.environment == "dev" && data.aws_caller_identity.current.account_id == "954976300695"
+    condition     = (var.environment == "dev" && data.aws_caller_identity.current.account_id == "954976300695") ? true : (var.environment == "prod" && data.aws_caller_identity.current.account_id == "112233445566") ? true : false
     error_message = "Dev must be deployed to the 954976300695 account!"
-  }
-
-  assert {
-    condition     = var.environment == "prod" && data.aws_caller_identity.current.account_id == "112233445566"
-    error_message = "Prod must be deployed to the 112233445566 account!"
   }
 }
 
