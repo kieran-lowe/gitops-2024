@@ -1,4 +1,4 @@
-name: Tofu Tests
+name: Tofu Test
 
 on:
   workflow_call:
@@ -16,7 +16,7 @@ env:
   TF_INPUT: "false"
 
 jobs:
-  plan:
+  tests:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Code
@@ -36,7 +36,8 @@ jobs:
 
       - name: Tofu Init
         run: tofu init --backend=false
-  
+        working-directory: ${{ github.workspace }}/tofu
+        
       - name: Tofu Test
         id: test
         run: tofu test --var-file="${{ inputs.tf_var_file }}" -no-color
