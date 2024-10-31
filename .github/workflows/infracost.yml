@@ -1,55 +1,53 @@
-name: Infracost
+# name: Infracost
 
-on:
-  pull_request:
-    types: [opened, reopened, synchronize]
-    branches:
-      - dev
-      - main
+# on:
+#   pull_request:
+#     types: [opened, reopened, synchronize]
+#     branches:
+#       - dev
+#       - main
 
-jobs:
-  # This stage runs the Infracost CLI and posts PR comments.
-  # It also updates PR comments when the PR is updated (synchronize event).
-  infracost-pull-request-checks:
-    name: Infracost Pull Request Checks
-    if: github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize')
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-    steps:
-      - name: Setup Infracost
-        uses: infracost/actions/setup@v3
-        with:
-          api-key: ${{ secrets.INFRACOST_API_KEY }}
+# jobs:
+#   infracost-pull-request-checks:
+#     name: Infracost Pull Request Checks
+#     if: github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize')
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       pull-requests: write
+#     steps:
+#       - name: Setup Infracost
+#         uses: infracost/actions/setup@v3
+#         with:
+#           api-key: ${{ secrets.INFRACOST_API_KEY }}
 
-      - name: Checkout base branch
-        uses: actions/checkout@v4
-        with:
-          ref: '${{ github.event.pull_request.base.ref }}'
+#       - name: Checkout base branch
+#         uses: actions/checkout@v4
+#         with:
+#           ref: '${{ github.event.pull_request.base.ref }}'
 
-      - name: Generate Infracost cost estimate baseline
-        run: |
-          infracost breakdown --path=. \
-                              --format=json \
-                              --out-file=/tmp/infracost-base.json
+#       - name: Generate Infracost cost estimate baseline
+#         run: |
+#           infracost breakdown --path=. \
+#                               --format=json \
+#                               --out-file=/tmp/infracost-base.json
 
-      # Checkout the current PR branch so we can create a diff.
-      - name: Checkout PR branch
-        uses: actions/checkout@v4
+#       # Checkout the current PR branch so we can create a diff.
+#       - name: Checkout PR branch
+#         uses: actions/checkout@v4
 
-      # Generate an Infracost diff and save it to a JSON file.
-      - name: Generate Infracost diff
-        run: |
-          infracost diff --path=. \
-                          --format=json \
-                          --compare-to=/tmp/infracost-base.json \
-                          --out-file=/tmp/infracost.json
+#       # Generate an Infracost diff and save it to a JSON file.
+#       - name: Generate Infracost diff
+#         run: |
+#           infracost diff --path=. \
+#                           --format=json \
+#                           --compare-to=/tmp/infracost-base.json \
+#                           --out-file=/tmp/infracost.json
 
-      - name: Post Infracost comment
-        run: |
-            infracost comment github --path=/tmp/infracost.json \
-                                     --repo=$GITHUB_REPOSITORY \
-                                     --github-token=${{ github.token }} \
-                                     --pull-request=${{ github.event.pull_request.number }} \
-                                     --behavior=update
+#       - name: Post Infracost comment
+#         run: |
+#             infracost comment github --path=/tmp/infracost.json \
+#                                      --repo=$GITHUB_REPOSITORY \
+#                                      --github-token=${{ github.token }} \
+#                                      --pull-request=${{ github.event.pull_request.number }} \
+#                                      --behavior=update
