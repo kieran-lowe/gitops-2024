@@ -1,7 +1,19 @@
 name: tofu-checks
 
 on:
-    workflow_call:
+  workflow_call:
+    inputs:
+      tf_var_file:
+        required: true
+        type: string
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
 
 jobs:
   fmt:
@@ -45,3 +57,31 @@ jobs:
       - name: Tofu Validate
         run: tofu validate
         working-directory: ${{ github.workspace }}/tofu
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+        with:
+            ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Configure OpenTofu
+        uses: opentofu/setup-opentofu@v1
+
+      - name: Print Tofu Version
+        run: tofu --version
+
+      - name: Get OIDC Token File
+        run: |
+          curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r .value > /tmp/web-identity-token
+
+      - name: Tofu Init
+        run: tofu init --backend=false
+        working-directory: ${{ github.workspace }}/tofu
+
+      - name: Tofu Test
+        id: test
+        run: tofu test --var-file="${{ inputs.tf_var_file }}"
+        working-directory: ${{ github.workspace }}/tofu
+      
