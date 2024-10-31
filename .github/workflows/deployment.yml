@@ -68,8 +68,8 @@ jobs:
                                       --repo=$GITHUB_REPOSITORY \
                                       --github-token=${{ github.token }} \
                                       --pull-request=${{ github.event.pull_request.number }} \
-                                      --behavior=update
-                                      --policy-path policies/cost.rego
+                                      --behavior=update \
+                                      --policy-path ./policies/cost.rego
 
   sast-checks:
     uses: ./.github/workflows/sast.yml
