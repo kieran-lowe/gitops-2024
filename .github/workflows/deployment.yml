@@ -101,7 +101,7 @@ jobs:
       tf_var_file: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}.tfvars"
 
   tofu-apply:
-    if: ${{ github.ref == 'refs/heads/main' && 'main' || 'dev' }} && github.event_name == 'push'
+    if: github.ref == ${{ github.ref == 'refs/heads/main' && 'refs/heads/main' || 'refs/heads/dev' }} && github.event_name == 'push'
     environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
     needs:
       - tofu-plan
