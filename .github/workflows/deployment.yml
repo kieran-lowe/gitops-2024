@@ -6,6 +6,14 @@ on:
     branches:
       - dev
       - main
+    paths:
+      - 'tofu/**'
+  push:
+    branches:
+      - dev
+      - main
+    paths:
+      - 'tofu/**'
 
 permissions:
   contents: read
@@ -101,7 +109,7 @@ jobs:
       tf_var_file: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}.tfvars"
 
   tofu-apply:
-    if: github.event_name == 'push' && github.ref == (github.ref == 'refs/heads/main' && 'refs/heads/main' || 'refs/heads/dev')
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
     environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
     runs-on: ubuntu-latest
     steps:
