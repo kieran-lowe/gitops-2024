@@ -1,4 +1,4 @@
-# tflint-ignore: terraform_deprecated_interpolation
+# tflint-ignore: terraform_unused_declarations
 data "aws_caller_identity" "current" {}
 
 # data "aws_partition" "current" {}
