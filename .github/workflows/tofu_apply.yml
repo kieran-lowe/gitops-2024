@@ -21,6 +21,7 @@ env:
 jobs:
   apply:
     runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
     steps:
       - name: Check Out Code
         uses: actions/checkout@v4

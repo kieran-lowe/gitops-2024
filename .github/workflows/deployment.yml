@@ -24,6 +24,7 @@ defaults:
 
 jobs:
   tofu-checks:
+    if: github.event_name == 'pull_request'
     permissions:
       contents: read
       id-token: write
@@ -80,12 +81,15 @@ jobs:
                                       --policy-path ./policies/cost.rego
 
   sast-checks:
+    if: github.event_name == 'pull_request'
     uses: ./.github/workflows/sast.yml
 
   linters:
+    if: github.event_name == 'pull_request'
     uses: ./.github/workflows/linters.yml
 
   terraform-docs:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Code
@@ -99,6 +103,7 @@ jobs:
           working-dir: '${{ github.workspace }}/tofu'
   
   tofu-plan:
+    if: github.event_name == 'pull_request'
     permissions:
       contents: read
       id-token: write
@@ -110,16 +115,10 @@ jobs:
 
   tofu-apply:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
-    environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Code
-        uses: actions/checkout@v4
-        with:
-            ref: ${{ github.event.pull_request.head.ref }}
-            
-      - name: Tofu Apply
-        uses: ./.github/workflows/tofu_apply.yml
-        with:
-          environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
-          tf_var_file: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}.tfvars"
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/tofu_apply.yml
+    with:
+      environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+      tf_var_file: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}.tfvars"
