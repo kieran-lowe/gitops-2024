@@ -42,6 +42,6 @@ jobs:
         run: tofu init --backend-config="key=${{ github.event.repository.name }}/${{ inputs.environment }}/terraform.tfstate" --var-file="${{ inputs.tf_var_file }}"
         working-directory: ${{ github.workspace }}/tofu
 
-      - name: Tofu Plan
-        run: tofu apply --auto-approve
+      - name: Tofu Apply
+        run: tofu apply --var-file="${{ inputs.tf_var_file }}" -no-color --auto-approve
         working-directory: ${{ github.workspace }}/tofu
