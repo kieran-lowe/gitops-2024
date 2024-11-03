@@ -101,15 +101,8 @@ jobs:
       tf_var_file: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}.tfvars"
 
   tofu-apply:
-    if: github.ref == ${{ github.ref == 'refs/heads/main' && 'refs/heads/main' || 'refs/heads/dev' }} && github.event_name == 'push'
+    if: success() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev') && github.event_name == 'push'
     environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
-    needs:
-      - tofu-plan
-      - infracost
-      - terraform-docs
-      - tofu-checks
-      - sast-checks
-      - linters
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Code
