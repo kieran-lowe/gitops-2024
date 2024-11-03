@@ -100,22 +100,24 @@ jobs:
       environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
       tf_var_file: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}.tfvars"
 
-  # tofu-apply:
-  #   needs:
-  #     - tofu-plan
-  #     - tofu-checks
-  #     - sast-checks
-  #     - linters
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Check Out Code
-  #       uses: actions/checkout@v4
-  #       with:
-  #           ref: ${{ github.event.pull_request.head.ref }}
+  tofu-apply:
+    environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+    needs:
+      - tofu-plan
+      - infracost
+      - terraform-docs
+      - tofu-checks
+      - sast-checks
+      - linters
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+        with:
+            ref: ${{ github.event.pull_request.head.ref }}
             
-  #     - name: Tofu Apply
-  #       uses: ./.github/workflows/tofu_apply.yml
-  #       with:
-  #         runner: ubuntu-latest
-  #         environment: dev
-  #         gh_environment: dev-apply
+      - name: Tofu Apply
+        uses: ./.github/workflows/tofu_apply.yml
+        with:
+          environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+          tf_var_file: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}.tfvars"
