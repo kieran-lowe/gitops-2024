@@ -1,0 +1,41 @@
+site_name: MTC GitOps Bootcamp 2024
+site_author: Kieran Lowe
+site_description: Documentation for the GitOps Bootcamp 2024
+site_url: https://kieran-lowe.github.io/gitops-bootcamp-2024/
+repo_name: kieran-lowe/gitops-bootcamp-2024
+repo_url: https://github.com/kieran-lowe/gitops-bootcamp-2024
+edit_uri: edit/main/docs
+
+plugins:
+  - search
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+theme:
+  name: material
+  logo: assets/logo.png
+  favicon: assets/favicon.png
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - content.action.edit
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  palette:
+    - scheme: slate
+      toggle:
+        icon: material/weather-night
+        name: Dark Mode
+    - scheme: default
+      toggle:
+        icon: material/weather-sunny
+        name: Light Mode
+extra: 
+  homepage: https://kieranlowe.io
