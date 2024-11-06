@@ -69,7 +69,7 @@ variable "additional_tags" {
   }
 
   validation {
-    condition     = alltrue([for value in values(var.additional_tags) : length(value) >= 0 && length(key) <= 256])
+    condition     = alltrue([for value in values(var.additional_tags) : length(value) >= 0 && length(value) <= 256])
     error_message = "All values in your additional tags must be at least 0 characters long and no more than 256 characters long."
   }
 }
