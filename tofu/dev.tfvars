@@ -4,5 +4,5 @@ instance_name = "grafana-server"
 instance_type = "t3.micro"
 volume_size   = 8
 additional_tags = {
-  Purpose = "Monitoring"
+  purpose = "monitoring"
 }

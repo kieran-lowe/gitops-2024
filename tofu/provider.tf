@@ -39,8 +39,8 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Project     = "MoreThanCertified"
-      Environment = var.environment
+      project     = "morethancertified"
+      environment = var.environment
     }
   }
 }
