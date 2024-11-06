@@ -14,9 +14,13 @@ jobs:
     - name: Check port availability in environments
       id: check_port_dev
       run: |
-        IP_ADDRESS_DEV="18.133.134.19" >> $GITHUB_ENV
-        IP_ADDRESS_PROD="13.41.241.137" >> $GITHUB_ENV
-        PORT="3000" >> $GITHUB_ENV
+        IP_ADDRESS_DEV="18.133.134.19"
+        IP_ADDRESS_PROD="13.41.241.137"
+        PORT="3000"
+        echo $IP_ADDRESS_DEV >> $GITHUB_ENV
+        echo $IP_ADDRESS_PROD >> $GITHUB_ENV
+        echo $PORT >> $GITHUB_ENV
+        
         if curl --silent --fail --max-time 20 --connect-timeout 10 "http://$IP_ADDRESS_DEV:$PORT"; then
           echo "Grafana is available in dev!"
         else
