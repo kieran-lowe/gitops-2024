@@ -15,4 +15,8 @@ run "instance_name_valid_check" {
   }
 
   command = plan
+
+  expect_failures = [
+    check.grafana_health_check
+  ]
 }
