@@ -1,0 +1,97 @@
+name: Tofu Drift Check
+
+on:
+  schedule:
+    - cron: 0 17 * * * #5pm every day
+  workflow_call: {}
+
+jobs:
+  tofu-drift:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Configure OpenTofu
+        uses: opentofu/setup-opentofu@12f4debbf681675350b6cd1f0ff8ecfbda62027b # v1.0.4
+
+      - name: Print Tofu Version
+        run: tofu --version
+
+      - name: Get OIDC Token File
+        run: |
+          curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r .value > /tmp/web-identity-token
+
+      - name: Tofu Init (Dev)
+        id: init-dev
+        run: tofu init --backend-config="key=${{ github.event.repository.name }}/dev/terraform.tfstate" --var-file="dev.tfvars"
+        working-directory: ${{ github.workspace }}/tofu
+    
+      - name: Tofu Plan (Dev)
+        id: plan-dev
+        run: tofu plan --var-file="dev.tfvars" -no-color -detailed-exitcode -out=tfdev.plan
+        working-directory: ${{ github.workspace }}/tofu
+
+      - name: Tofu Init (Prod)
+        id: init-prod
+        run: tofu init --backend-config="key=${{ github.event.repository.name }}/prod/terraform.tfstate" --var-file="prod.tfvars"
+        working-directory: ${{ github.workspace }}/tofu
+    
+      - name: Tofu Plan (Prod)
+        id: plan-prod
+        run: tofu plan --var-file="prod.tfvars" -no-color -detailed-exitcode -out=tfprod.plan
+        working-directory: ${{ github.workspace }}/tofu
+
+      - name: Create Issue if Drift Detected (Dev)
+        if: steps.plan-dev.outputs.exitcode == 2
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const fs = require('fs');
+
+            const issueTitle = 'Drift detected in DEV';
+            const issueBody = `Drift has been detected in dev. Below is the plan output:\n\`\`\`${fs.readFileSync('tfdev.plan').toString()}\`\`\``;
+            const issues = await github.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'drift-detected'
+            });
+            const issueExists = issues.data.some(issue => issue.title === issueTitle);
+            if (!issueExists) {
+              await github.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: issueTitle,
+                body: issueBody,
+                labels: ['drift-detected']
+              });
+            }
+
+      - name: Create Issue if Drift Detected (Prod)
+        if: steps.plan-prod.outputs.exitcode == 2
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const fs = require('fs');
+
+            const issueTitle = 'Drift detected in PROD';
+            const issueBody = `Drift has been detected in production. Below is the plan output:\n\`\`\`${fs.readFileSync('tfprod.plan').toString()}\`\`\``;
+            const issues = await github.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'drift-detected'
+            });
+            const issueExists = issues.data.some(issue => issue.title === issueTitle);
+            if (!issueExists) {
+              await github.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: issueTitle,
+                body: issueBody,
+                labels: ['drift-detected']
+              });
+            }
