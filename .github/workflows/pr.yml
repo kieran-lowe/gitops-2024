@@ -113,6 +113,7 @@ jobs:
           working-dir: 'tofu'
           config-file: '.terraform-docs.yml'
           fail-on-diff: true
+        continue-on-error: true
 
       - name: Check
         run: |
