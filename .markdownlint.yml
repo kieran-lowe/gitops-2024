@@ -13,8 +13,9 @@ MD013: false
 
 MD033:
   allowed_elements:
-    - a  #terraform-docs
-    - br #terraform-docs
+    - a   #terraform-docs
+    - br  #terraform-docs
+    - pre #terraform-docs
 
 # MD035: Horizontal rule style
 MD035:

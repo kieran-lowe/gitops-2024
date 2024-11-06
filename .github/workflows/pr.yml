@@ -96,8 +96,19 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 
+      - name: Configure OpenTofu
+        uses: opentofu/setup-opentofu@12f4debbf681675350b6cd1f0ff8ecfbda62027b # v1.0.4
+
+      - name: Tofu Init
+        run: tofu init --backend=false
+        working-directory: ${{ github.workspace }}/tofu
+
+      - name: Print Tofu Version
+        run: tofu --version
+        working-directory: ${{ github.workspace }}/tofu
+
       - name: Generate TF Docs
-        uses: terraform-docs/gh-actions@v1.3.0
+        uses: terraform-docs/gh-actions@aeae0038ed47a547e0c0fca5c059d3335f48fb25 # v1.3.0
         with:
           working-dir: '${{ github.workspace }}/tofu'
           config-file: '${{ github.workspace }}/.terraform-docs.yml'
