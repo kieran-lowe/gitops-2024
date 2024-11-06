@@ -35,7 +35,7 @@ jobs:
         run: tflint --chdir=.
         working-directory: ${{ github.workspace }}/tofu
 
-  codespell:
+  cspell:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Code

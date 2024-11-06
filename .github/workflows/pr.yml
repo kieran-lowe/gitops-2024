@@ -23,7 +23,7 @@ jobs:
       id-token: write
     uses: ./.github/workflows/tofu_checks.yml
     with:
-      tf_var_file: "${{ github.base_ref == 'refs/heads/main' && 'prod' || 'dev' }}.tfvars"
+      tf_var_file: "${{ github.base_ref == 'main' && 'prod' || 'dev' }}.tfvars"
 
   tofu-plan:
     permissions:
@@ -32,8 +32,8 @@ jobs:
       pull-requests: write
     uses: ./.github/workflows/tofu_plan.yml
     with:
-      environment: ${{ github.base_ref == 'refs/heads/main' && 'prod' || 'dev' }}
-      tf_var_file: "${{ github.base_ref == 'refs/heads/main' && 'prod' || 'dev' }}.tfvars"
+      environment: ${{ github.base_ref == 'main' && 'prod' || 'dev' }}
+      tf_var_file: "${{ github.base_ref == 'main' && 'prod' || 'dev' }}.tfvars"
 
   sast-checks:
     uses: ./.github/workflows/sast.yml
@@ -62,7 +62,7 @@ jobs:
           infracost breakdown --path=. \
                               --format=json \
                               --out-file=/tmp/infracost-base.json \
-                              --terraform-var-file "${{ github.base_ref == 'refs/heads/main' && 'prod' || 'dev' }}.tfvars"
+                              --terraform-var-file "${{ github.base_ref == 'main' && 'prod' || 'dev' }}.tfvars"
         working-directory: ${{ github.workspace }}/tofu
 
       # Checkout the current PR branch so we can create a diff.
@@ -76,7 +76,7 @@ jobs:
                           --format=json \
                           --compare-to=/tmp/infracost-base.json \
                           --out-file=/tmp/infracost.json \
-                          --terraform-var-file "${{ github.base_ref == 'refs/heads/main' && 'prod' || 'dev' }}.tfvars"
+                          --terraform-var-file "${{ github.base_ref == 'main' && 'prod' || 'dev' }}.tfvars"
         working-directory: ${{ github.workspace }}/tofu
 
       - name: Post Infracost comment
