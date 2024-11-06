@@ -1,4 +1,4 @@
-deployment_role   = "arn:aws:iam::954976300695:role/mtc-gitops2024-terraform-prod-deployment-role"
+deployment_role   = "arn:aws:iam::816069156152:role/mtc-gitops2024-terraform-prod-deployment-role"
 role_session_name = "mtc-gitops2024-ghactions-deployment-prod"
 
 environment   = "prod"
