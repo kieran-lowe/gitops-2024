@@ -19,7 +19,7 @@ defaults:
     shell: bash
 
 jobs:
-  terraform-docs:
+  check:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Code
