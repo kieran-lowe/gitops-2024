@@ -3,7 +3,7 @@ name: Port Check
 on:
   schedule:
     - cron: '0 17 * * *'
-  workflow_call: {}
+  workflow_dispatch: {}
 
 jobs:
   port-check:

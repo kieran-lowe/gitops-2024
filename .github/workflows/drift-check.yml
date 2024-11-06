@@ -3,7 +3,7 @@ name: Tofu Drift Check
 on:
   schedule:
     - cron: 0 17 * * * #5pm every day
-  workflow_call: {}
+  workflow_dispatch: {}
 
 jobs:
   tofu-drift:
