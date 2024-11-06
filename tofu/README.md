@@ -49,7 +49,7 @@ Directory containing the code to deploy the infrastructure!
 | <a name="input_instance_name"></a> [instance\_name](#input\_instance\_name) | Name of the Grafana instance | `string` | n/a | yes |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | Instance size to use for the Grafana server | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | AWS region to deploy resources to | `string` | n/a | yes |
-| <a name="input_volume_size"></a> [volume\_size](#input\_volume\_size) | Size of the root EBS volume (in GB) for the Grafana instance | `number` | n/a | yes |
+| <a name="input_volume_size"></a> [volume\_size](#input\_volume\_size) | Size of the root EBS volume (in GB) for the Grafana instance | `number` | `8` | no |
 
 ## Outputs
 
