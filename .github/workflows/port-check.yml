@@ -5,37 +5,28 @@ on:
     - cron: '0 17 * * *'
   workflow_dispatch: {}
 
+permissions:
+  issues: write
+
 jobs:
-  port-check:
+  dev:
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
     steps:
-    - name: Check port availability in environments
-      id: check_port_dev
+    - name: Check port availability
       run: |
-        IP_ADDRESS_DEV="18.133.134.19"
-        IP_ADDRESS_PROD="13.41.241.137"
+        IP_ADDRESS="18.133.134.19"
         PORT="3000"
-        echo $IP_ADDRESS_DEV >> $GITHUB_ENV
-        echo $IP_ADDRESS_PROD >> $GITHUB_ENV
-        echo $PORT >> $GITHUB_ENV
-        
-        if curl --silent --fail --max-time 20 --connect-timeout 10 "http://$IP_ADDRESS_DEV:$PORT"; then
+        echo IP_ADDRESS="18.133.134.19" >> $GITHUB_ENV
+        echo PORT="3000" >> $GITHUB_ENV
+
+        if curl --silent --fail --max-time 20 --connect-timeout 10 "http://$IP_ADDRESS:$PORT"; then
           echo "Grafana is available in dev!"
         else
           echo "Grafana is NOT AVAILABLE in DEV!"
           echo "port_unavailable_dev=true" >> $GITHUB_ENV
         fi
-        
-        if curl --silent --fail --max-time 20 --connect-timeout 10 "http://$IP_ADDRESS_PROD:$PORT"; then
-          echo "Grafana is available in prod!"
-        else
-          echo "Grafana is NOT AVAILABLE IN PROD!"
-          echo "port_unavailable_prod=true" >> $GITHUB_ENV
-        fi
 
-    - name: Create Issue if Grafana is not available in dev
+    - name: Create Issue if Grafana is not available
       if: env.port_unavailable_dev == 'true'
       uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
       with:
@@ -59,13 +50,31 @@ jobs:
             });
           }
 
-    - name: Create Issue if Grafana is not available in prod
+  prod:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check port availability
+      run: |
+        IP_ADDRESS="13.41.241.137"
+        PORT="3000"
+        echo IP_ADDRESS_PROD="13.41.241.137" >> $GITHUB_ENV
+        echo PORT="3000" >> $GITHUB_ENV
+
+        if curl --silent --fail --max-time 20 --connect-timeout 10 "http://$IP_ADDRESS:$PORT"; then
+          echo "Grafana is available in prod!"
+        else
+          echo "Grafana is NOT AVAILABLE in PROD!"
+          echo "port_unavailable_prod=true" >> $GITHUB_ENV
+        fi
+        
+
+    - name: Create Issue if Grafana is not available
       if: env.port_unavailable_prod == 'true'
       uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
       with:
         script: |
           const issueTitle = 'Grafana Unavailable Alert in PROD';
-          const issueBody = `The port ${{ env.PORT }} at IP address ${{ env.IP_ADDRESS_PROD }} is not available. Please check the service.`;
+          const issueBody = `The port ${{ env.PORT }} at IP address ${{ env.IP_ADDRESS }} is not available. Please check the service.`;
           const issues = await github.rest.issues.listForRepo({
             owner: context.repo.owner,
             repo: context.repo.repo,
