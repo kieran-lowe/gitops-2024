@@ -1,0 +1,80 @@
+name: Port Check
+
+on:
+  schedule:
+    - cron: '0 17 * * *'
+  workflow_call: {}
+
+jobs:
+  port-check:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+    - name: Check port availability in environments
+      id: check_port_dev
+      run: |
+        IP_ADDRESS_DEV="18.133.134.19"
+        IP_ADDRESS_PROD="18.133.134.19"
+        PORT="3000"
+        if curl --silent --fail "http://$IP_ADDRESS_DEV:$PORT"; then
+          echo "Grafana is available in dev!"
+        else
+          echo "Grafana is NOT AVAILABLE in DEV!"
+          echo "port_unavailable_dev=true" >> $GITHUB_ENV
+        fi
+        
+        if curl --silent --fail "http://$IP_ADDRESS_PROD:$PORT"; then
+          echo "Grafana is available in prod!"
+        else
+          echo "Grafana is NOT AVAILABLE IN PROD!"
+          echo "port_unavailable_prod=true" >> $GITHUB_ENV
+        fi
+
+    - name: Create Issue if Grafana is not available in dev
+      if: env.port_unavailable_dev == 'true'
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+      with:
+        script: |
+          const issueTitle = 'Grafana Unavailable Alert in DEV';
+          const issueBody = `The port ${process.env.PORT} at IP address ${process.env.IP_ADDRESS_DEV} is not available. Please check the service.`;
+          const issues = await github.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            state: 'open',
+            labels: 'port-check'
+          });
+          const issueExists = issues.data.some(issue => issue.title === issueTitle);
+          if (!issueExists) {
+            await github.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: issueTitle,
+              body: issueBody,
+              labels: ['port-check']
+            });
+          }
+
+    - name: Create Issue if Grafana is not available in prod
+      if: env.port_unavailable_prod == 'true'
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+      with:
+        script: |
+          const issueTitle = 'Grafana Unavailable Alert in PROD';
+          const issueBody = `The port ${process.env.PORT} at IP address ${process.env.IP_ADDRESS_PROD} is not available. Please check the service.`;
+          const issues = await github.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            state: 'open',
+            labels: 'port-check'
+          });
+          const issueExists = issues.data.some(issue => issue.title === issueTitle);
+          if (!issueExists) {
+            await github.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: issueTitle,
+              body: issueBody,
+              labels: ['port-check']
+            });
+          }

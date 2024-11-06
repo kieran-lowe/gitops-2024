@@ -39,9 +39,9 @@ jobs:
           curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r .value > /tmp/web-identity-token
 
       - name: Tofu Init
-        run: tofu init --backend-config="key=${{ github.event.repository.name }}/${{ github.base_ref == 'main' && 'prod' || 'dev' }}/terraform.tfstate" --var-file="${{ github.base_ref == 'main' && 'prod' || 'dev' }}.tfvars"
+        run: tofu init --backend-config="key=${{ github.event.repository.name }}/${{ github.ref_name == 'main' && 'prod' || 'dev' }}/terraform.tfstate" --var-file="${{ github.ref_name == 'main' && 'prod' || 'dev' }}.tfvars"
         working-directory: ${{ github.workspace }}/tofu
 
       - name: Tofu Apply
-        run: tofu apply --var-file="${{ github.base_ref == 'main' && 'prod' || 'dev' }}.tfvars" -no-color --auto-approve
+        run: tofu apply --var-file="${{ github.ref_name == 'main' && 'prod' || 'dev' }}.tfvars" -no-color --auto-approve
         working-directory: ${{ github.workspace }}/tofu
