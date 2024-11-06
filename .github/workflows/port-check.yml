@@ -53,13 +53,6 @@ jobs:
               body: issueBody,
               labels: ['port-check']
             });
-          } else {
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `Grafana is still not available in dev. Please check the service.`
-            })
           }
 
     - name: Create Issue if Grafana is not available in prod
@@ -84,11 +77,4 @@ jobs:
               body: issueBody,
               labels: ['port-check']
             });
-          } else {
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `Grafana is still not available in prod. Please check the service.`
-            })
           }
