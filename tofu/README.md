@@ -45,10 +45,12 @@ Directory containing the code to deploy the infrastructure!
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_additional_tags"></a> [additional\_tags](#input\_additional\_tags) | Apply additional tags to Grafana instance | `map(string)` | n/a | yes |
+| <a name="input_deployment_role_arn"></a> [deployment\_role\_arn](#input\_deployment\_role\_arn) | The ARN of the role to assume when deploying resources | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | Name of the environment infrastrucutre is being deployed to | `string` | n/a | yes |
 | <a name="input_instance_name"></a> [instance\_name](#input\_instance\_name) | Name of the Grafana instance | `string` | n/a | yes |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | Instance size to use for the Grafana server | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | AWS region to deploy resources to | `string` | n/a | yes |
+| <a name="input_role_session_name"></a> [role\_session\_name](#input\_role\_session\_name) | The name of the session when assuming the role | `string` | n/a | yes |
 | <a name="input_volume_size"></a> [volume\_size](#input\_volume\_size) | Size of the root EBS volume (in GB) for the Grafana instance | `number` | `8` | no |
 
 ## Outputs
