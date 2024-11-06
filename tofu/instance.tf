@@ -51,7 +51,7 @@ check "grafana_health_check" {
   }
 
   assert {
-    condition     = data.http.test_access.status == 200
+    condition     = data.http.test_access.status_code == 200
     error_message = "Grafana server is not accessible!"
   }
 }
