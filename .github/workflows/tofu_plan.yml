@@ -43,7 +43,7 @@ jobs:
   
       - name: Tofu Plan
         id: plan
-        run: tofu plan --var-file="${{ inputs.tf_var_file }}" -no-color
+        run: tofu plan --var-file="${{ inputs.tf_var_file }}" -no-color -detailed-exitcode
         working-directory: ${{ github.workspace }}/tofu
 
       - name: Outplan Tofu Plan
