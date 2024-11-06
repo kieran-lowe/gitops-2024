@@ -3,7 +3,7 @@ variable "environment" {
   description = "Name of the environment infrastrucutre is being deployed to"
 
   validation {
-    condition     = contains(["mgmt", "dev", "test", "prod"], var.environment)
+    condition     = contains(["dev", "prod"], var.environment)
     error_message = "${format("%#v", var.environment)} is not a valid environment. Allowed values are: ${format("%#v", ["mgmt", "dev", "test", "prod"])}!"
   }
 }
@@ -18,28 +18,58 @@ variable "region" {
   }
 }
 
-variable "instances" {
-  description = "Object containing details about the instance to be created"
-  type = map(object({
-    enable_detailed_monitoring = optional(bool)
-    volume_size                = number
-    instance_type              = string
-    additional_tags            = optional(map(string))
-  }))
-  nullable = false
+variable "instance_name" {
+  type        = string
+  description = "Name of the Grafana instance"
 
   validation {
-    condition     = alltrue([for name, config in var.instances : can(regex("^[a-z0-9-]+$", name))])
-    error_message = "The following instances have an invalid name: ${format("%#v", [for name, config in var.instances : name if !can(regex("^[a-z0-9-]+$", name))])}. Ensure your instance names are alphanumeric and lowercase!"
+    condition     = can(regex("^[a-z0-9-]+$", var.instance_name))
+    error_message = "${format("%#v", var.instance_name)} is not a valid instance name. Ensure your instance name is alphanumeric and lowercase!"
+  }
+}
+
+variable "instance_type" {
+  type        = string
+  description = "Instance size to use for the Grafana server"
+
+  validation {
+    condition     = contains(["t3.micro"], var.instance_type)
+    error_message = "${format("%#v", var.instance_type)} is not a valid instance type. Allowed values are: ${format("%#v", ["t3.micro"])}!"
+  }
+}
+
+variable "volume_size" {
+  type        = number
+  description = "Size of the root EBS volume (in GB) for the Grafana instance"
+  default     = 8
+
+  validation {
+    condition     = var.volume_size <= 10
+    error_message = "${format("%#v", var.volume_size)} is not valid! It must be less than or equal to 10."
+  }
+}
+
+variable "additional_tags" {
+  type        = map(string)
+  description = "Apply additional tags to Grafana instance"
+
+  validation {
+    condition     = alltrue([for key in keys(var.additional_tags) : can(regex("^[a-z0-9-]+$", key))])
+    error_message = "All keys in your additional tags must be alphanumeric and lowercase! If word seperation is present, use hyphens (-)."
   }
 
   validation {
-    condition     = alltrue([for name, config in var.instances : contains(["t3.micro"], config.instance_type)])
-    error_message = "The following instances have an invalid instance type: ${format("%#v", [for name, config in var.instances : name if config.instance_type == "t3.micro"])}. Allowed values are: ${format("%#v", ["t3.micro"])}!"
+    condition     = anytrue([for key in keys(var.additional_tags) : startswith("aws:", key)]) ? false : true
+    error_message = "You cannot use tags that begin with 'aws:' as they are reserved for AWS use."
   }
 
   validation {
-    condition     = alltrue([for name, config in var.instances : config.volume_size <= 30])
-    error_message = "The following instances have a volume size bigger than 30GB: ${format("%#v", [for name, config in var.instances : name if config.volume_size > 30])}. Ensure your volumes are 30GB or lower!"
+    condition     = alltrue([for key in keys(var.additional_tags) : length(key) >= 1 && length(key) <= 128])
+    error_message = "All keys in your additional tags must be at least 1 character long and no more than 128 characters long."
+  }
+
+  validation {
+    condition     = alltrue([for value in values(var.additional_tags) : length(value) >= 0 && length(value) <= 256])
+    error_message = "All values in your additional tags must be at least 0 characters long and no more than 256 characters long."
   }
 }

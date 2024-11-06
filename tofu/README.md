@@ -14,12 +14,13 @@ Directory containing the code to deploy the infrastructure!
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.8.3, < 2.0.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.0.0, < 6.0.0 |
+| <a name="requirement_http"></a> [http](#requirement\_http) | >= 3.0.0, < 4.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.70.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.74.0 |
 
 ## Resources
 
@@ -43,13 +44,18 @@ Directory containing the code to deploy the infrastructure!
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_additional_tags"></a> [additional\_tags](#input\_additional\_tags) | Apply additional tags to Grafana instance | `map(string)` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | Name of the environment infrastrucutre is being deployed to | `string` | n/a | yes |
-| <a name="input_instances"></a> [instances](#input\_instances) | Object containing details about the instance to be created | <pre>map(object({<br/>    enable_detailed_monitoring = optional(bool)<br/>    volume_size                = number<br/>    instance_type              = string<br/>    additional_tags            = optional(map(string))<br/>  }))</pre> | n/a | yes |
+| <a name="input_instance_name"></a> [instance\_name](#input\_instance\_name) | Name of the Grafana instance | `string` | n/a | yes |
+| <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | Instance size to use for the Grafana server | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | AWS region to deploy resources to | `string` | n/a | yes |
+| <a name="input_volume_size"></a> [volume\_size](#input\_volume\_size) | Size of the root EBS volume (in GB) for the Grafana instance | `number` | `8` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_grafana_ips"></a> [grafana\_ips](#output\_grafana\_ips) | URL to access the Grafana server |
+| <a name="output_account_id"></a> [account\_id](#output\_account\_id) | AWS Account ID used for deployment |
+| <a name="output_grafana_ip"></a> [grafana\_ip](#output\_grafana\_ip) | URL to access the Grafana server |
+| <a name="output_region"></a> [region](#output\_region) | Name of the region used for deployment |
 <!-- END_TF_DOCS -->

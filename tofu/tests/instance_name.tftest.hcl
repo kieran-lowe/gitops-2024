@@ -1,18 +1,18 @@
-run "instance_name_check" {
+run "instance_name_invalid_check" {
   variables {
-    instances = {
-      "grafana_server" = {
-        instance_type = "t3.micro"
-        volume_size   = 10
-        additional_tags = {
-          Purpose = "Monitoring"
-        }
-      }
-    }
+    instance_name = "Grafana-Server"
   }
 
-  expect_failures = [var.instances]
+  expect_failures = [var.instance_name]
 
   command = plan
 }
 
+run "instance_name_valid_check" {
+  assert {
+    condition     = can(regex("^[a-z0-9-]+$", var.instance_name))
+    error_message = "${format("%#v", var.instance_name)} is not a valid instance name. Ensure your instance name is alphanumeric and lowercase!"
+  }
+
+  command = plan
+}
