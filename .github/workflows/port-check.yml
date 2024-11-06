@@ -15,7 +15,7 @@ jobs:
       id: check_port_dev
       run: |
         IP_ADDRESS_DEV="18.133.134.19"
-        IP_ADDRESS_PROD="18.133.134.19"
+        IP_ADDRESS_PROD="13.41.241.137"
         PORT="3000"
         if curl --silent --fail "http://$IP_ADDRESS_DEV:$PORT"; then
           echo "Grafana is available in dev!"
