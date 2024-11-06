@@ -14,9 +14,9 @@ jobs:
     - name: Check port availability in environments
       id: check_port_dev
       run: |
-        IP_ADDRESS_DEV="18.133.134.19"
-        IP_ADDRESS_PROD="13.41.241.137"
-        PORT="3000"
+        IP_ADDRESS_DEV="18.133.134.19" >> $GITHUB_ENV
+        IP_ADDRESS_PROD="13.41.241.137" >> $GITHUB_ENV
+        PORT="3000" >> $GITHUB_ENV
         if curl --silent --fail --max-time 20 --connect-timeout 10 "http://$IP_ADDRESS_DEV:$PORT"; then
           echo "Grafana is available in dev!"
         else
@@ -37,7 +37,7 @@ jobs:
       with:
         script: |
           const issueTitle = 'Grafana Unavailable Alert in DEV';
-          const issueBody = `The port ${process.env.PORT} at IP address ${process.env.IP_ADDRESS_DEV} is not available. Please check the service.`;
+          const issueBody = `The port ${env.PORT} at IP address ${env.IP_ADDRESS_DEV} is not available. Please check the service.`;
           const issues = await github.rest.issues.listForRepo({
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -53,6 +53,13 @@ jobs:
               body: issueBody,
               labels: ['port-check']
             });
+          } else {
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Grafana is still not available in dev. Please check the service.`
+            })
           }
 
     - name: Create Issue if Grafana is not available in prod
@@ -61,7 +68,7 @@ jobs:
       with:
         script: |
           const issueTitle = 'Grafana Unavailable Alert in PROD';
-          const issueBody = `The port ${process.env.PORT} at IP address ${process.env.IP_ADDRESS_PROD} is not available. Please check the service.`;
+          const issueBody = `The port ${env.PORT} at IP address ${env.IP_ADDRESS_PROD} is not available. Please check the service.`;
           const issues = await github.rest.issues.listForRepo({
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -77,4 +84,11 @@ jobs:
               body: issueBody,
               labels: ['port-check']
             });
+          } else {
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Grafana is still not available in prod. Please check the service.`
+            })
           }
