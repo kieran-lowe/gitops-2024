@@ -2,40 +2,35 @@ name: sast_checks
 
 on:
   workflow_call:
-    inputs:
-      directory:
-          type: string
-          required: false
-          description: 'The directory to run the tools in i.e. where your Terraform code is located'
-          default: '/tofu'
-
 
 defaults:
   run:
     shell: bash
-    working-directory: ${{ inputs.directory }}
 
 jobs:
   checkov:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
             ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Run Checkov
-        uses: bridgecrewio/checkov-action@v12
+        uses: bridgecrewio/checkov-action@99bb2caf247dfd9f03cf984373bc6043d4e32ebf # v12
+        with:
+          config_file: .checkov.yml
   trivy:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
             ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Run Trivy 
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@915b19bbe73b92a6cf82a1bc12b087c9a19a5fe2 # v0.28.0
         with:
+          trivy-config: .trivy.yml
           scan-type: 'config'
           exit-code: '1'

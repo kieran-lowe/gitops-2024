@@ -1,45 +1,87 @@
 name: tofu-checks
 
 on:
-    workflow_call:
+  workflow_call:
+    inputs:
+      tf_var_file:
+        required: true
+        type: string
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
 
 jobs:
   fmt:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
             ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Configure OpenTofu
-        uses: opentofu/setup-opentofu@v1
+        uses: opentofu/setup-opentofu@12f4debbf681675350b6cd1f0ff8ecfbda62027b # v1.0.4
 
       - name: Print Tofu Version
         run: tofu --version
 
       - name: Tofu Format Check
         run: tofu fmt --check
-        continue-on-error: true
+        working-directory: ${{ github.workspace }}/tofu
 
 
   validate:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
             ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Configure OpenTofu
-        uses: opentofu/setup-opentofu@v1
+        uses: opentofu/setup-opentofu@12f4debbf681675350b6cd1f0ff8ecfbda62027b # v1.0.4
 
       - name: Print Tofu Version
         run: tofu --version
         working-directory: ${{ github.workspace }}/tofu
 
-      - name: Tofu Validate
-        run: |
-          tofu init --backend=false
-          tofu validate
+      - name: Tofu Init
+        run: tofu init --backend=false
         working-directory: ${{ github.workspace }}/tofu
+
+      - name: Tofu Validate
+        run: tofu validate
+        working-directory: ${{ github.workspace }}/tofu
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+            ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Configure OpenTofu
+        uses: opentofu/setup-opentofu@12f4debbf681675350b6cd1f0ff8ecfbda62027b # v1.0.4
+
+      - name: Print Tofu Version
+        run: tofu --version
+
+      - name: Get OIDC Token File
+        run: |
+          curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r .value > /tmp/web-identity-token
+
+      - name: Tofu Init
+        run: tofu init --backend=false
+        working-directory: ${{ github.workspace }}/tofu
+
+      - name: Tofu Test
+        id: test
+        run: tofu test --var-file="${{ inputs.tf_var_file }}"
+        working-directory: ${{ github.workspace }}/tofu
+      

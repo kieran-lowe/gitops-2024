@@ -1,11 +1,11 @@
 repos:
-  - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.96.1
+  - repo: https://github.com/tofuutils/pre-commit-opentofu
+    rev: v2.1.0
     hooks:
-      - id: terraform_fmt
-      - id: terraform_validate
-      - id: terraform_tflint
-      - id: terraform_docs
+      - id: tofu_fmt
+      - id: tofu_validate
+      - id: tofu_tflint
+      - id: tofu_docs
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:

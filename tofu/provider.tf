@@ -27,10 +27,10 @@ provider "aws" {
   region = var.region
 
   assume_role_with_web_identity {
-    role_arn                = "arn:aws:iam::123456789012:role/role-name"
-    session_name            = "session-name"
+    role_arn                = "arn:aws:iam::954976300695:role/mtc-gitops2024-terraform-dev-deployment-role"
+    session_name            = "mtc-gitops2024-ghactions-deployment"
     web_identity_token_file = "/tmp/web-identity-token"
-    duration = "15m"
+    duration                = "15m"
   }
 
   default_tags {

@@ -18,12 +18,28 @@ variable "region" {
   }
 }
 
-variable "instance_type" {
-  type        = string
-  description = "Instance size to use for the Grafana server"
+variable "instances" {
+  description = "Object containing details about the instance to be created"
+  type = map(object({
+    enable_detailed_monitoring = optional(bool)
+    volume_size                = number
+    instance_type              = string
+    additional_tags            = optional(map(string))
+  }))
+  nullable = false
 
   validation {
-    condition     = contains(["t3.micro"], var.instance_type)
-    error_message = "${format("%#v", var.instance_type)} is not a valid instance type. Allowed values are: ${format("%#v", ["t3.micro"])}!"
+    condition     = alltrue([for name, config in var.instances : can(regex("^[a-z0-9-]+$", name))])
+    error_message = "The following instances have an invalid name: ${format("%#v", [for name, config in var.instances : name if !can(regex("^[a-z0-9-]+$", name))])}. Ensure your instance names are alphanumeric and lowercase!"
+  }
+
+  validation {
+    condition     = alltrue([for name, config in var.instances : contains(["t3.micro"], config.instance_type)])
+    error_message = "The following instances have an invalid instance type: ${format("%#v", [for name, config in var.instances : name if config.instance_type == "t3.micro"])}. Allowed values are: ${format("%#v", ["t3.micro"])}!"
+  }
+
+  validation {
+    condition     = alltrue([for name, config in var.instances : config.volume_size <= 30])
+    error_message = "The following instances have a volume size bigger than 30GB: ${format("%#v", [for name, config in var.instances : name if config.volume_size > 30])}. Ensure your volumes are 30GB or lower!"
   }
 }
