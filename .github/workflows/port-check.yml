@@ -37,7 +37,7 @@ jobs:
       with:
         script: |
           const issueTitle = 'Grafana Unavailable Alert in DEV';
-          const issueBody = `The port ${env.PORT} at IP address ${env.IP_ADDRESS_DEV} is not available. Please check the service.`;
+          const issueBody = `The port ${{ env.PORT }} at IP address ${{ env.IP_ADDRESS_DEV }} is not available. Please check the service.`;
           const issues = await github.rest.issues.listForRepo({
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -68,7 +68,7 @@ jobs:
       with:
         script: |
           const issueTitle = 'Grafana Unavailable Alert in PROD';
-          const issueBody = `The port ${env.PORT} at IP address ${env.IP_ADDRESS_PROD} is not available. Please check the service.`;
+          const issueBody = `The port ${{ env.PORT }} at IP address ${{ env.IP_ADDRESS_PROD }} is not available. Please check the service.`;
           const issues = await github.rest.issues.listForRepo({
             owner: context.repo.owner,
             repo: context.repo.repo,
