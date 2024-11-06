@@ -6,6 +6,10 @@ terraform {
       source  = "hashicorp/aws"
       version = ">= 5.0.0, < 6.0.0"
     }
+    http = {
+      source  = "hashicorp/http"
+      version = ">= 3.0.0, < 4.0.0"
+    }
   }
 
   backend "s3" {
@@ -27,16 +31,16 @@ provider "aws" {
   region = var.region
 
   assume_role_with_web_identity {
-    role_arn                = "arn:aws:iam::954976300695:role/mtc-gitops2024-terraform-dev-deployment-role"
-    session_name            = "mtc-gitops2024-ghactions-deployment"
+    role_arn                = var.deployment_role_arn
+    session_name            = var.role_session_name
     web_identity_token_file = "/tmp/web-identity-token"
     duration                = "15m"
   }
 
   default_tags {
     tags = {
-      Project     = "MoreThanCertified"
-      Environment = var.environment
+      project     = "morethancertified"
+      environment = var.environment
     }
   }
 }

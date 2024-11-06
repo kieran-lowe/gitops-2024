@@ -1,6 +1,6 @@
 # Tofu
 
-This is a test
+Directory containing the code to deploy the infrastructure for the project!
 
 <!-- BEGIN_TF_DOCS -->
 ## terraform-docs
@@ -14,28 +14,50 @@ This is a test
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.8.3, < 2.0.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.0.0, < 6.0.0 |
+| <a name="requirement_http"></a> [http](#requirement\_http) | >= 3.0.0, < 4.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.70.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.74.0 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [aws_instance.instance](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
+| [aws_default_security_group.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_security_group) | resource |
+| [aws_instance.grafana_server](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
+| [aws_internet_gateway.gitops_igw](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway) | resource |
+| [aws_route_table.gitops_rt](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
+| [aws_route_table_association.gitops_rta](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
+| [aws_security_group.gitops_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
+| [aws_subnet.gitops_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
+| [aws_vpc.gitops_vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) | resource |
+| [aws_vpc_security_group_egress_rule.gitops_sg_egress_rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_egress_rule) | resource |
+| [aws_vpc_security_group_ingress_rule.gitops_sg_ingress_rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_ingress_rule) | resource |
+| [aws_ami.ubuntu](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
-| [aws_default_tags.tags](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/default_tags) | data source |
-| [aws_iam_session_context.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_session_context) | data source |
-| [aws_partition.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_additional_tags"></a> [additional\_tags](#input\_additional\_tags) | Apply additional tags to Grafana instance | `map(string)` | n/a | yes |
+| <a name="input_deployment_role_arn"></a> [deployment\_role\_arn](#input\_deployment\_role\_arn) | The ARN of the role to assume when deploying resources | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | Name of the environment infrastrucutre is being deployed to | `string` | n/a | yes |
+| <a name="input_instance_name"></a> [instance\_name](#input\_instance\_name) | Name of the Grafana instance | `string` | n/a | yes |
+| <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | Instance size to use for the Grafana server | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | AWS region to deploy resources to | `string` | n/a | yes |
+| <a name="input_role_session_name"></a> [role\_session\_name](#input\_role\_session\_name) | The name of the session when assuming the role | `string` | n/a | yes |
+| <a name="input_volume_size"></a> [volume\_size](#input\_volume\_size) | Size of the root EBS volume (in GB) for the Grafana instance | `number` | `8` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_account_id"></a> [account\_id](#output\_account\_id) | AWS Account ID used for deployment |
+| <a name="output_grafana_ip"></a> [grafana\_ip](#output\_grafana\_ip) | URL to access the Grafana server |
+| <a name="output_region"></a> [region](#output\_region) | Name of the region used for deployment |
 <!-- END_TF_DOCS -->

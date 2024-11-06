@@ -10,4 +10,8 @@ run "region_input" {
   }
 
   command = plan
+
+  expect_failures = [
+    check.grafana_health_check
+  ]
 }

@@ -1,0 +1,40 @@
+name: Terraform Docs Check
+on:
+  workflow_call:
+    inputs:
+      config_file:
+        required: true
+        type: string
+      directory:
+        required: false
+        type: string
+        default: .
+      tfdoc_version:
+        required: false
+        type: string
+        default: v0.19.0
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install Terraform Docs
+        run: |
+          cd /tmp
+          curl -sSLo ./terraform-docs.tar.gz https://terraform-docs.io/dl/${{ inputs.tfdoc_version }}/terraform-docs-${{ inputs.tfdoc_version }}-$(uname)-amd64.tar.gz
+          tar -xzf terraform-docs.tar.gz
+          chmod +x terraform-docs
+          sudo mv terraform-docs /usr/local/bin/terraform-docs
+
+      - name: Print Terraform Docs Version
+        run: terraform-docs --version
+      
+      - name: Terraform Docs Check
+        run: terraform-docs -c ${{ inputs.config_file }} --output-check ${{ inputs.directory }} 
