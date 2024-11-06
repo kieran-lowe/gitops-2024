@@ -63,21 +63,21 @@ jobs:
               repo: context.repo.repo,
               issue_number: context.payload.number,
             })
-            const botComment = comments.find(comment => comment.user.id === 41898282 && comment.body.includes("Tofu Plan for deployment to"))
+            const botComment = comments.find(comment => comment.user.id === 41898282 && comment.body.includes("# Tofu Plan for deployment to"))
 
             if (!botComment) {
               github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                body: `Tofu Plan for deployment to <b>${{ github.base_ref }}</b>:\n\`\`\`${planOutput}\`\`\``
+                body: `# Tofu Plan for deployment to <b>${{ github.base_ref }}</b>:\n\`\`\`${planOutput}\`\`\``
               })
             } else {
               github.rest.issues.updateComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 comment_id: botComment.id,
-                body: `Tofu Plan for deployment to <b>${{ github.base_ref }}</b>:\n\`\`\`${planOutput}\`\`\``
+                body: `# Tofu Plan for deployment to <b>${{ github.base_ref }}</b>:\n\`\`\`${planOutput}\`\`\``
               })
             }
 

@@ -1,6 +1,6 @@
 # Tofu
 
-Directory containing the code to deploy the infrastructure for the project.
+Directory containing the code to deploy the infrastructure for the project!
 
 <!-- BEGIN_TF_DOCS -->
 ## terraform-docs
