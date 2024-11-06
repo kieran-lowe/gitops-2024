@@ -33,7 +33,7 @@ jobs:
           chmod +x terraform-docs
           sudo mv terraform-docs /usr/local/bin/terraform-docs
 
-      - name: Install Terraform Docs
+      - name: Print Terraform Docs Version
         run: terraform-docs --version
       
       - name: Terraform Docs Check
