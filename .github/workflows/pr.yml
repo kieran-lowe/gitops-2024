@@ -108,13 +108,8 @@ jobs:
         working-directory: ${{ github.workspace }}/tofu
 
       - name: Generate TF Docs
-        uses: terraform-docs/gh-actions@aeae0038ed47a547e0c0fca5c059d3335f48fb25 # v1.3.0
+        uses: terraform-docs/gh-actions@e47bfa196e79fa50987ef391be236d9d97b0c786 # v1.2.0
         with:
           working-dir: 'tofu'
           config-file: '.terraform-docs.yml'
           fail-on-diff: true
-        continue-on-error: true
-
-      - name: Check
-        run: |
-          cat tofu/README.md
