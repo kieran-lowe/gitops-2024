@@ -2,3 +2,4 @@ gitignore: true # Don't lint files in .gitignore
 
 globs:
   - "**/*.md"
+  - "!docs/**/*.md" # Ignore markdown files in the docs directory as mkdocs has standards that conflict with markdownlint

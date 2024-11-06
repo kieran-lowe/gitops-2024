@@ -34,7 +34,6 @@ jobs:
         run: tofu fmt --check
         working-directory: ${{ github.workspace }}/tofu
 
-
   validate:
     runs-on: ubuntu-latest
     steps:
@@ -84,4 +83,3 @@ jobs:
         id: test
         run: tofu test --var-file="${{ inputs.tf_var_file }}"
         working-directory: ${{ github.workspace }}/tofu
-      

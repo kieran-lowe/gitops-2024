@@ -1,0 +1,12 @@
+version: 0.2
+language: en
+dictionaries:
+  - en_US
+  - en-gb
+  - companies
+  - softwareTerms
+  - misc
+  - json
+  - yaml
+ignorePaths:
+  - docs

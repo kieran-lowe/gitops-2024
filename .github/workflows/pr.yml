@@ -25,6 +25,22 @@ jobs:
     with:
       tf_var_file: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}.tfvars"
 
+  tofu-plan:
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+    uses: ./.github/workflows/tofu_plan.yml
+    with:
+      environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+      tf_var_file: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}.tfvars"
+
+  sast-checks:
+    uses: ./.github/workflows/sast.yml
+
+  linters:
+    uses: ./.github/workflows/linters.yml
+
   infracost:
     runs-on: ubuntu-latest
     permissions:
@@ -72,23 +88,6 @@ jobs:
                                       --behavior=update \
                                       --policy-path ./policies/cost.rego
 
-  codespell:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Code
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-
-      - name: Run cspell
-        uses: streetsidesoftware/cspell-action@9759be9ad475fe8145f8d2a1bf29a1c4d1c6f18d # v6.9.0
-
-  sast-checks:
-    uses: ./.github/workflows/sast.yml
-
-  linters:
-    uses: ./.github/workflows/linters.yml
-
   terraform-docs:
     runs-on: ubuntu-latest
     steps:
@@ -101,15 +100,5 @@ jobs:
         uses: terraform-docs/gh-actions@v1.3.0
         with:
           working-dir: '${{ github.workspace }}/tofu'
-          config-file: '${{ github.workspace }}/terraform-docs.yml'
+          config-file: '${{ github.workspace }}/.terraform-docs.yml'
           fail-on-diff: true
-  
-  tofu-plan:
-    permissions:
-      contents: read
-      id-token: write
-      pull-requests: write
-    uses: ./.github/workflows/tofu_plan.yml
-    with:
-      environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
-      tf_var_file: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}.tfvars"
