@@ -1,5 +1,5 @@
-deployment_role   = "arn:aws:iam::954976300695:role/mtc-gitops2024-terraform-dev-deployment-role"
-role_session_name = "mtc-gitops2024-ghactions-deployment-dev"
+deployment_role_arn = "arn:aws:iam::954976300695:role/mtc-gitops2024-terraform-dev-deployment-role"
+role_session_name   = "mtc-gitops2024-ghactions-deployment-dev"
 
 environment   = "dev"
 region        = "eu-west-2"
