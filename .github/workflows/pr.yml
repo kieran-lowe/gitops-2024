@@ -89,27 +89,8 @@ jobs:
                                       --policy-path ./policies/cost.rego
 
   terraform-docs:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Code
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-
-      - name: Configure OpenTofu
-        uses: opentofu/setup-opentofu@12f4debbf681675350b6cd1f0ff8ecfbda62027b # v1.0.4
-
-      - name: Tofu Init
-        run: tofu init --backend=false
-        working-directory: ${{ github.workspace }}/tofu
-
-      - name: Print Tofu Version
-        run: tofu --version
-        working-directory: ${{ github.workspace }}/tofu
-
-      - name: Generate TF Docs
-        uses: terraform-docs/gh-actions@e47bfa196e79fa50987ef391be236d9d97b0c786 # v1.2.0
-        with:
-          working-dir: 'tofu'
-          config-file: '.terraform-docs.yml'
-          fail-on-diff: true
+    uses: ./.github/workflows/terraform-docs.yml
+    with:
+      config_file: ".terraform-docs.yml"
+      directory: "tofu"
+      tfdoc_version: "v0.19.0"
