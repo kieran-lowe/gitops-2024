@@ -53,7 +53,7 @@ jobs:
 
             const issueTitle = 'Drift detected in DEV';
             const issueBody = `Drift has been detected in dev. Below is the plan output:\n\`\`\`${fs.readFileSync('tfdev.plan').toString()}\`\`\``;
-            const issues = await github.issues.listForRepo({
+            const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
@@ -61,7 +61,7 @@ jobs:
             });
             const issueExists = issues.data.some(issue => issue.title === issueTitle);
             if (!issueExists) {
-              await github.issues.create({
+              await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 title: issueTitle,
@@ -79,7 +79,7 @@ jobs:
 
             const issueTitle = 'Drift detected in PROD';
             const issueBody = `Drift has been detected in production. Below is the plan output:\n\`\`\`${fs.readFileSync('tfprod.plan').toString()}\`\`\``;
-            const issues = await github.issues.listForRepo({
+            const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
@@ -87,7 +87,7 @@ jobs:
             });
             const issueExists = issues.data.some(issue => issue.title === issueTitle);
             if (!issueExists) {
-              await github.issues.create({
+              await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 title: issueTitle,
