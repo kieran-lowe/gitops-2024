@@ -37,7 +37,7 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             state: 'open',
-            labels: 'port-check'
+            labels: 'port-check-failed'
           });
           const issueExists = issues.data.some(issue => issue.title === issueTitle);
           if (!issueExists) {
@@ -46,7 +46,7 @@ jobs:
               repo: context.repo.repo,
               title: issueTitle,
               body: issueBody,
-              labels: ['port-check']
+              labels: ['port-check-failed']
             });
           }
 
@@ -79,7 +79,7 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             state: 'open',
-            labels: 'port-check'
+            labels: 'port-check-failed'
           });
           const issueExists = issues.data.some(issue => issue.title === issueTitle);
           if (!issueExists) {
@@ -88,6 +88,6 @@ jobs:
               repo: context.repo.repo,
               title: issueTitle,
               body: issueBody,
-              labels: ['port-check']
+              labels: ['port-check-failed']
             });
           }
