@@ -21,6 +21,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
+      pull-requests: write
     uses: ./.github/workflows/tofu_checks.yml
     with:
       tf_var_file: "${{ github.base_ref == 'main' && 'prod' || 'dev' }}.tfvars"
@@ -39,6 +40,10 @@ jobs:
     uses: ./.github/workflows/sast.yml
 
   linters:
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
     uses: ./.github/workflows/linters.yml
 
   infracost:
