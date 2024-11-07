@@ -89,7 +89,7 @@ jobs:
                                       --policy-path ./policies/cost.rego
 
   terraform-docs:
-    uses: ./.github/workflows/terraform-docs.yml
+    uses: ./.github/workflows/terraform_docs.yml
     with:
       config_file: ".terraform-docs.yml"
       directory: "tofu"
