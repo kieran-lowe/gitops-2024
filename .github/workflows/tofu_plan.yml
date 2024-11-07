@@ -70,14 +70,14 @@ jobs:
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                body: `# Tofu Plan for \`${{ github.base_ref == 'main' && 'prod' || 'dev' }}\`:\n\`\`\`${planOutput}\`\`\``
+                body: `# Tofu Plan for \`${{ github.base_ref == 'main' && 'prod' || 'dev' }}\`:\n\`\`\`hcl\n${planOutput}\`\`\``
               })
             } else {
               github.rest.issues.updateComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 comment_id: botComment.id,
-                body: `# Tofu Plan for \`${{ github.base_ref == 'main' && 'prod' || 'dev' }}\`:\n\`\`\`${planOutput}\`\`\``
+                body: `# Tofu Plan for \`${{ github.base_ref == 'main' && 'prod' || 'dev' }}\`:\n\`\`\`hcl\n${planOutput}\`\`\``
               })
             }
 
