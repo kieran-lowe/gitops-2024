@@ -14,9 +14,9 @@ jobs:
     steps:
     - name: Check port availability
       run: |
-        IP_ADDRESS="18.133.134.19"
+        IP_ADDRESS="35.178.137.32"
         PORT="3000"
-        echo IP_ADDRESS="18.133.134.19" >> $GITHUB_ENV
+        echo IP_ADDRESS="35.178.137.32" >> $GITHUB_ENV
         echo PORT="3000" >> $GITHUB_ENV
 
         if curl --silent --fail --max-time 20 --connect-timeout 10 "http://$IP_ADDRESS:$PORT"; then
@@ -55,9 +55,9 @@ jobs:
     steps:
     - name: Check port availability
       run: |
-        IP_ADDRESS="13.41.241.137"
+        IP_ADDRESS="13.41.201.92"
         PORT="3000"
-        echo IP_ADDRESS_PROD="13.41.241.137" >> $GITHUB_ENV
+        echo IP_ADDRESS_PROD="13.41.201.92" >> $GITHUB_ENV
         echo PORT="3000" >> $GITHUB_ENV
 
         if curl --silent --fail --max-time 20 --connect-timeout 10 "http://$IP_ADDRESS:$PORT"; then
