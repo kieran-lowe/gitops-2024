@@ -42,9 +42,15 @@ jobs:
         with:
           script: |
             const fs = require('fs');
+            const { execSync } = require('child_process');
+
+            // Get the terraform plan output
+            const planOutput = execSync('tofu show -no-color tfdev.plan', {
+              cwd: 'tofu'
+            }).toString();
 
             const issueTitle = 'Drift detected in DEV';
-            const issueBody = `Drift has been detected in dev. Below is the plan output:\n\`\`\`${fs.readFileSync('tfdev.plan').toString()}\`\`\``;
+            const issueBody = `# Drift has been detected in \`dev\`. Below is the plan output:\n\`\`\`${planOutput}\`\`\``;
             const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -93,9 +99,15 @@ jobs:
         with:
           script: |
             const fs = require('fs');
+            const { execSync } = require('child_process');
+
+            // Get the terraform plan output
+            const planOutput = execSync('tofu show -no-color tfprod.plan', {
+              cwd: 'tofu'
+            }).toString();
 
             const issueTitle = 'Drift detected in PROD';
-            const issueBody = `Drift has been detected in production. Below is the plan output:\n\`\`\`${fs.readFileSync('tfprod.plan').toString()}\`\`\``;
+            const issueBody = `# Drift has been detected in production. Below is the plan output:\n\`\`\`${planOutput}\`\`\``;
             const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
