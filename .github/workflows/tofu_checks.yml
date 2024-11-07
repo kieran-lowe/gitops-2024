@@ -101,7 +101,7 @@ jobs:
             const testResult = `**Tofu Test:** ${{ needs.test.result }}`;
             const commentBody = `## Tofu Checks Result\n\n${fmtResult}\n${validateResult}\n${testResult}`;
 
-            const { data: comments } = await github.issues.listComments({
+            const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
@@ -110,14 +110,14 @@ jobs:
             const botComment = comments.find(comment => comment.user.login === 'github-actions[bot]' && comment.body.includes('## Tofu Checks Result'));
 
             if (botComment) {
-              await github.issues.updateComment({
+              await github.rest.issues.updateComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 comment_id: botComment.id,
                 body: commentBody,
               });
             } else {
-              await github.issues.createComment({
+              await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
