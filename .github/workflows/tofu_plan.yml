@@ -58,6 +58,10 @@ jobs:
               cwd: 'tofu'
             }).toString();
 
+            const plan = planOutput.length > 65000 ? planOutput.substring(0, 65000) + " ..." : planOutput;
+
+            const truncateMessage = planOutput.length > 65000 ? `**Note:** The plan output is too long so it has been truncated. You can view the full plan at: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}` : "";
+
             const {data: comments} = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -70,14 +74,14 @@ jobs:
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                body: `# Tofu Plan for \`${{ github.base_ref == 'main' && 'prod' || 'dev' }}\`:\n\`\`\`hcl\n${planOutput}\`\`\``
+                body: `# Tofu Plan for \`${{ github.base_ref == 'main' && 'prod' || 'dev' }}\`:\n<details><summary>Show Plan</summary>\n\n\`\`\`hcl\n${plan}\n\`\`\`\n</details>\n\n${truncateMessage}`
               })
             } else {
               github.rest.issues.updateComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 comment_id: botComment.id,
-                body: `# Tofu Plan for \`${{ github.base_ref == 'main' && 'prod' || 'dev' }}\`:\n\`\`\`hcl\n${planOutput}\`\`\``
+                body: `# Tofu Plan for \`${{ github.base_ref == 'main' && 'prod' || 'dev' }}\`:\n<details><summary>Show Plan</summary>\n\n\`\`\`hcl\n${plan}\n\`\`\`\n</details>\n\n${truncateMessage}`
               })
             }
 
