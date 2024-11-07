@@ -53,35 +53,35 @@ jobs:
             const fs = require('fs');
             const { execSync } = require('child_process');
 
-            // Get the terraform plan output
             const planOutput = execSync('tofu show -no-color tf.plan', {
               cwd: 'tofu'
             }).toString();
 
             const plan = planOutput.length > 65000 ? planOutput.substring(0, 65000) + " ..." : planOutput;
-
             const truncateMessage = planOutput.length > 65000 ? `> [!NOTE]\n> The plan output is too long so it has been truncated. You can view the full plan at: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}` : "";
+            const commentBody = `## Tofu Plan for \`${{ github.base_ref == 'main' && 'prod' || 'dev' }}\`:\n<details><summary>Show Plan</summary>\n\n\`\`\`hcl\n${plan}\n\`\`\`\n</details>\n\n${truncateMessage}`;
 
-            const {data: comments} = await github.rest.issues.listComments({
+            const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.number,
-            })
-            const botComment = comments.find(comment => comment.user.id === 41898282 && comment.body.includes("# Tofu Plan for"))
+            });
+
+            const botComment = comments.find(comment => comment.user.id === 41898282 && comment.body.includes("## Tofu Plan for"));
 
             if (!botComment) {
               github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                body: `# Tofu Plan for \`${{ github.base_ref == 'main' && 'prod' || 'dev' }}\`:\n<details><summary>Show Plan</summary>\n\n\`\`\`hcl\n${plan}\n\`\`\`\n</details>\n\n${truncateMessage}`
-              })
+                body: commentBody,
+              });
             } else {
               github.rest.issues.updateComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 comment_id: botComment.id,
-                body: `# Tofu Plan for \`${{ github.base_ref == 'main' && 'prod' || 'dev' }}\`:\n<details><summary>Show Plan</summary>\n\n\`\`\`hcl\n${plan}\n\`\`\`\n</details>\n\n${truncateMessage}`
-              })
+                body: commentBody,
+              });
             }
 
