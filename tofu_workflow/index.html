@@ -1,0 +1,1758 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for the GitOps minicamp 2024">
+      
+      
+        <meta name="author" content="Kieran Lowe">
+      
+      
+        <link rel="canonical" href="https://kieran-lowe.github.io/gitops-2024/tofu_workflow/">
+      
+      
+        <link rel="prev" href="../aws_accounts/">
+      
+      
+        <link rel="next" href="../whats_next/">
+      
+      
+      <link rel="icon" href="../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.44">
+    
+    
+      
+        <title>OpenTofu Workflow - MTC GitOps Minicamp 2024</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.0253249f.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#opentofu-workflow" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="https://kieranlowe.io" title="MTC GitOps Minicamp 2024" class="md-header__button md-logo" aria-label="MTC GitOps Minicamp 2024" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MTC GitOps Minicamp 2024
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              OpenTofu Workflow
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Dark Mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark Mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Light Mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light Mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/kieran-lowe/gitops-2024" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kieran-lowe/gitops-bootcamp-2024
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://kieranlowe.io" title="MTC GitOps Minicamp 2024" class="md-nav__button md-logo" aria-label="MTC GitOps Minicamp 2024" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    MTC GitOps Minicamp 2024
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/kieran-lowe/gitops-2024" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kieran-lowe/gitops-bootcamp-2024
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../aws_accounts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AWS Account Structure
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    OpenTofu Workflow
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    OpenTofu Workflow
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#state-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      State Management
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="State Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#partial-backend-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Partial Backend Configuration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#write" class="md-nav__link">
+    <span class="md-ellipsis">
+      Write
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Write">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#versions-and-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Versions and Providers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Versions and Providers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opentofu-versions" class="md-nav__link">
+    <span class="md-ellipsis">
+      OpenTofu Versions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Providers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Providers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aws" class="md-nav__link">
+    <span class="md-ellipsis">
+      aws
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http" class="md-nav__link">
+    <span class="md-ellipsis">
+      http
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variable-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Variable Validation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Checks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Plan
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Plan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#plan-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Plan File
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      Apply
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Destroy
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../whats_next/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    What's Next?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../github_action_workflows/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    GitHub Action Workflows
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            GitHub Action Workflows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github_action_workflows/pr/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PR
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github_action_workflows/tofu_checks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tofu Checks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github_action_workflows/tofu_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tofu Plan
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github_action_workflows/sast/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SAST Checks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github_action_workflows/linters/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Linter Checks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github_action_workflows/terraform_docs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Terraform Docs Check
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github_action_workflows/infracost/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Infracost
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github_action_workflows/tofu_apply/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tofu Apply
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github_action_workflows/tofu_destroy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tofu Destroy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github_action_workflows/drift_check/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tofu Drift Check
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github_action_workflows/port_check/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Port Check
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github_action_workflows/mkdocs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Generate Documentation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Repository
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Repository
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repository/code_of_conduct/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Code of Conduct
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repository/contributing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repository/merging_strategy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Merging Strategy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repository/repo_settings/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Repo Settings
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repository/repo_structure/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Repo Structure
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repository/toolchain/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Toolchain
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+    <a href="https://github.com/kieran-lowe/gitops-2024/edit/main/docs/tofu_workflow.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="opentofu-workflow">OpenTofu Workflow</h1>
+<p>OpenTofu was used to deploy the infrastructure defined via the bootcamp. I believe passionately in Open Source, and thought this project was the perfect opportunity to use it for the first time! This page covers the workflow I created for this project, and goes over why I made the decisions I did.</p>
+<h2 id="state-management">State Management</h2>
+<p>To manage the state file, we are using the native S3 backend for storage. Followed by DynamoDB for the state locking. Amazon managed encryption keys were used to encrypt the bucket and table.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>In a customer/production situation, I would create dedicated CMKs (customer managed keys). However, I wanted to keep this in the free tier as much as possible.</p>
+</div>
+<p>A decision I made here is using separate IAM roles for managing the state file and the deployment of infrastructure. This means we can better adhere to the principal of least privilege as we wouldn't need to give the deployment role (the role that Terraform assumes to actually <em>deploy</em> infrastructure) permissions to also use the state file. This is super useful if you store your state file in a separate AWS account and is easy to implement. OpenTofu and Terraform can have two distinct authentication mechanisms:</p>
+<ol>
+<li>Accessing the state file (using the <code>backend "s3" {}</code> block)</li>
+<li>Deploying resources (using the <code>provider "aws" {}</code> block)</li>
+</ol>
+<p>If you don't explicitly configure the state file authentication, the authentication you configure at the <code>provider</code> level is used to access the <code>backend</code>.</p>
+<p><strong>Diagram</strong></p>
+<p>A diagram has been created below showing how the state file management has been configured along with a high level <em>n</em> account (e.g. dev, test, prod etc.) to show the separation.</p>
+<p><img alt="State Management Diagram" src="../assets/tofu_state_mgmt.drawio.png" /></p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>The rest of the workflow follows the traditional write, plan and apply workflow. You can find more information about this on OpenTofu's website: <a href="https://opentofu.org/docs/intro/core-workflow/">https://opentofu.org/docs/intro/core-workflow/</a></p>
+</div>
+<p>You can view more information on what these environment variables are at:</p>
+<ul>
+<li><a href="https://opentofu.org/docs/cli/config/environment-variables/#tf_in_automation">TF_IN_AUTOMATION</a></li>
+</ul>
+<div class="admonition quote">
+<p class="admonition-title">Quote (<em>from opentofu.org</em>)</p>
+<p>If <code>TF_IN_AUTOMATION</code> is set to any non-empty value, OpenTofu adjusts its output to avoid suggesting specific commands to run next. This can make the output more consistent and less confusing in workflows where users don't directly execute OpenTofu commands, like in CI systems or other wrapping applications.</p>
+<p>This is a purely cosmetic change to OpenTofu's human-readable output, and the exact output differences can change between minor OpenTofu versions.</p>
+</div>
+<ul>
+<li><a href="https://opentofu.org/docs/cli/config/environment-variables/#tf_input">TF_INPUT</a></li>
+</ul>
+<div class="admonition quote">
+<p class="admonition-title">Quote (<em>from opentofu.org</em>)</p>
+<p>If set to "false" or "0", causes tofu commands to behave as if the <code>-input=false</code> flag was specified. This is used when you want to disable prompts for variables that haven't had their values specified.</p>
+</div>
+<h3 id="partial-backend-configuration">Partial Backend Configuration</h3>
+<p>This Minicamp implements what is known as a <em>"partial"</em> backend configuration. This is where some of the backend is declared in the <code>backend</code> block, but some are passed in as CLI flags or as files to the <code>tofu init</code> command. </p>
+<p>You can see the <code>backend</code> block below:</p>
+<div class="language-hcl highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">tofu/provider.tf</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#__codelineno-0-25">25</a></span>
+<span class="normal"><a href="#__codelineno-0-26">26</a></span>
+<span class="normal"><a href="#__codelineno-0-27">27</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="kr">backend</span><span class="w"> </span><span class="nv">&quot;s3&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">  </span><span class="na">bucket</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;mtc-gitops2024-terraform-state-a12b&quot;</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">  </span><span class="na">encrypt</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">  </span><span class="na">kms_key_id</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;arn:aws:kms:eu-west-2:195275655961:key/77235df8-1d9e-4340-af90-e95a615ce943&quot;</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">  </span><span class="na">region</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;eu-west-2&quot;</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="w">  </span><span class="na">dynamodb_table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;mtc-gitops2024-terraform-state-locks-a12b&quot;</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="w">  </span><span class="nb">assume_role_with_web_identity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="w">    </span><span class="na">role_arn</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;arn:aws:iam::195275655961:role/mtc-gitops2024-terraform-state-role&quot;</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="w">    </span><span class="na">session_name</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;mtc-gitops2024-state-access&quot;</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="w">    </span><span class="na">web_identity_token_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/tmp/web-identity-token&quot;</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="w">    </span><span class="na">duration</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;15m&quot;</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>You may notice the <code>key</code> is missing from this, which points to the location of the state file in the S3 bucket. In my workflow, this is added inside the <code>tofu init</code> commands when the workflows run:</p>
+<div class="language-bash highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">.github/workflows/tofu_plan.yml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-41">41</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-41"><a id="__codelineno-1-41" name="__codelineno-1-41"></a>tofu<span class="w"> </span>init<span class="w"> </span>--backend-config<span class="o">=</span><span class="s2">&quot;key=</span><span class="si">${</span><span class="p">{ github.event.repository.name </span><span class="si">}</span><span class="s2">}/</span><span class="si">${</span><span class="p">{ inputs.environment </span><span class="si">}</span><span class="s2">}/terraform.tfstate&quot;</span><span class="w"> </span>--var-file<span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="p">{ inputs.tf_var_file </span><span class="si">}</span><span class="s2">}&quot;</span>
+</span></code></pre></div></td></tr></table></div>
+<p>I made this decision so I am sure the right state file for the right environment is always present, where as using different files could be prone to human error where it refers to the wrong state, even worse if you're not paying attention and then approve it to deployment!</p>
+<h2 id="write">Write</h2>
+<p>I like to keep everything related to the configuration of OpenTofu to itself as much as possible. What do I mean by this? For example: the role that OpenTofu uses to deploy infrastructure, I define it using the <code>assume_role_with_web_identity</code> block directly in the configuration itself. The role OpenTofu uses to configure the remote backend, again using the <code>assume_role_with_web_identity</code> block inside the <code>backend "s3" {}</code> block directly in the code. The version of OpenTofu to use, I use the <code>required_version</code> argument in the <code>terraform</code> block to control what versions of OpenTofu can be used.</p>
+<p>With some of these, you can pass in config via different files, such as <code>.hcl</code> for different backend configurations. How the authentication/authorisation works, you can pass in environment variables and CLI flags to configure it. It's awesome that this flexibility exists, but when someone looks at my code, I want to give them one common, standardised way everything is configured. </p>
+<p>For an engineer to understand the authentication flow, I don't want them having to go to the OpenTofu configuration, see some of it is there and then have to go to the workflow to see what roles are being used etc. </p>
+<p>I know what you might be thinking, didn't you do this for the state file, you used a partial backend configuration right? I did, but I've been in situations before where the wrong backend was configured for an environment and well, you can probably guess what happened next. Yes, you can technically rollback if your configuration is in git (it should be by the way!) but all that infrastructure still has to be deployed again; it doesn't magically reappear.</p>
+<h3 id="versions-and-providers">Versions and Providers</h3>
+<h4 id="opentofu-versions">OpenTofu Versions</h4>
+<p>I've configured the OpenTofu GitHub Action to always use the latest version of OpenTofu at runtime. This is as opposed to specifying a specific version of OpenTofu to run by passing in the variable into the Action. The control over which version to use is managed in the <code>required_version</code> argument of the <code>terraform</code> block:</p>
+<div class="language-hcl highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">tofu/provider.tf</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span><span class="na">required_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&gt;= 1.8.3, &lt; 2.0.0&quot;</span>
+</span></code></pre></div></td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the version constraint above does not meet the latest OpenTofu version, we would need to pass in which version to use to the OpenTofu Action.</p>
+</div>
+<h4 id="providers">Providers</h4>
+<p>The providers used are:</p>
+<ol>
+<li><a href="#aws">aws</a></li>
+<li><a href="#http">http</a></li>
+</ol>
+<div class="language-hcl highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">tofu/provider.tf</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-3-10">10</a></span>
+<span class="normal"><a href="#__codelineno-3-11">11</a></span>
+<span class="normal"><a href="#__codelineno-3-12">12</a></span>
+<span class="normal"><a href="#__codelineno-3-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="nb">required_providers</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">  </span><span class="nb">aws</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">    </span><span class="na">source</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;hashicorp/aws&quot;</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w">    </span><span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&gt;= 5.0.0, &lt; 6.0.0&quot;</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">  </span><span class="nb">http</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">    </span><span class="na">source</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;hashicorp/http&quot;</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">    </span><span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&gt;= 3.0.0, &lt; 4.0.0&quot;</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<h5 id="aws">aws</h5>
+<div class="language-hcl highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">tofu/provider.tf</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-30">30</a></span>
+<span class="normal"><a href="#__codelineno-4-31">31</a></span>
+<span class="normal"><a href="#__codelineno-4-32">32</a></span>
+<span class="normal"><a href="#__codelineno-4-33">33</a></span>
+<span class="normal"><a href="#__codelineno-4-34">34</a></span>
+<span class="normal"><a href="#__codelineno-4-35">35</a></span>
+<span class="normal"><a href="#__codelineno-4-36">36</a></span>
+<span class="normal"><a href="#__codelineno-4-37">37</a></span>
+<span class="normal"><a href="#__codelineno-4-38">38</a></span>
+<span class="normal"><a href="#__codelineno-4-39">39</a></span>
+<span class="normal"><a href="#__codelineno-4-40">40</a></span>
+<span class="normal"><a href="#__codelineno-4-41">41</a></span>
+<span class="normal"><a href="#__codelineno-4-42">42</a></span>
+<span class="normal"><a href="#__codelineno-4-43">43</a></span>
+<span class="normal"><a href="#__codelineno-4-44">44</a></span>
+<span class="normal"><a href="#__codelineno-4-45">45</a></span>
+<span class="normal"><a href="#__codelineno-4-46">46</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-30"><a id="__codelineno-4-30" name="__codelineno-4-30"></a><span class="kr">provider</span><span class="w"> </span><span class="nv">&quot;aws&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-31"><a id="__codelineno-4-31" name="__codelineno-4-31"></a><span class="w">  </span><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.region</span>
+</span><span id="__span-4-32"><a id="__codelineno-4-32" name="__codelineno-4-32"></a>
+</span><span id="__span-4-33"><a id="__codelineno-4-33" name="__codelineno-4-33"></a><span class="w">  </span><span class="nb">assume_role_with_web_identity</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-34"><a id="__codelineno-4-34" name="__codelineno-4-34"></a><span class="w">    </span><span class="na">role_arn</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="nv">var.deployment_role_arn</span>
+</span><span id="__span-4-35"><a id="__codelineno-4-35" name="__codelineno-4-35"></a><span class="w">    </span><span class="na">session_name</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="nv">var.role_session_name</span>
+</span><span id="__span-4-36"><a id="__codelineno-4-36" name="__codelineno-4-36"></a><span class="w">    </span><span class="na">web_identity_token_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/tmp/web-identity-token&quot;</span>
+</span><span id="__span-4-37"><a id="__codelineno-4-37" name="__codelineno-4-37"></a><span class="w">    </span><span class="na">duration</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;15m&quot;</span>
+</span><span id="__span-4-38"><a id="__codelineno-4-38" name="__codelineno-4-38"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-4-39"><a id="__codelineno-4-39" name="__codelineno-4-39"></a>
+</span><span id="__span-4-40"><a id="__codelineno-4-40" name="__codelineno-4-40"></a><span class="w">  </span><span class="nb">default_tags</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-41"><a id="__codelineno-4-41" name="__codelineno-4-41"></a><span class="w">    </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-42"><a id="__codelineno-4-42" name="__codelineno-4-42"></a><span class="w">      </span><span class="na">project</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;morethancertified&quot;</span>
+</span><span id="__span-4-43"><a id="__codelineno-4-43" name="__codelineno-4-43"></a><span class="w">      </span><span class="na">environment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.environment</span>
+</span><span id="__span-4-44"><a id="__codelineno-4-44" name="__codelineno-4-44"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-4-45"><a id="__codelineno-4-45" name="__codelineno-4-45"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-4-46"><a id="__codelineno-4-46" name="__codelineno-4-46"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>Inside all OpenTofu actions in the workflows, we use <code>curl</code> to get the OIDC token file that saves it in <code>/tmp/web-identity-token</code>, we then use this to configure the <code>assume_role_with_web_identity</code> block at the <code>backend</code> level and <code>provider</code> level as we are using different roles to interact with the backend, and another to deploy infrastructure.</p>
+<p>Now, why am I not using the official AWS <a href="https://github.com/aws-actions/configure-aws-credentials"><code>aws-actions/configure-aws-credentials</code></a> GitHub Action. Simply put this Action is a 1-2-1 relationship with itself and <strong><em>ONE</em></strong> role - as we are using multiple roles here it would mean I would have to configure this Action twice. To keep the workflow as small as possible, and as I want to keep everything configured using OpenTofu as much as possible it made sense to do it this way.</p>
+<p>Unfortunately it isn't like the official GCP (Google Cloud Platform) GitHub Action that can output a token file for use.</p>
+<p>I'm also using the <code>default_tags</code> block, which is a requirement of the minicamp, but I've used this as soon as it was released, I think, in Version 4 of the AWS provider? It's much nicer to use now than back then, those "inconsistent final plan" error messages were a pain to deal with!</p>
+<p>Here the tags <code>project=morethancertified</code> and <code>environment=dev/prod</code> are applied to all taggable resources declared as part of the configuration. This beats having to specify the <code>tags</code> block for each resource! You can still do this however to override and/or apply specific tags to specific resources, but this makes it much easier! </p>
+<h5 id="http">http</h5>
+<p>This provider, and it's only data source is to verify application availability using <code>check</code> blocks.</p>
+<div class="language-hcl highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">tofu/instance.tf</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-45">45</a></span>
+<span class="normal"><a href="#__codelineno-5-46">46</a></span>
+<span class="normal"><a href="#__codelineno-5-47">47</a></span>
+<span class="normal"><a href="#__codelineno-5-48">48</a></span>
+<span class="normal"><a href="#__codelineno-5-49">49</a></span>
+<span class="normal"><a href="#__codelineno-5-50">50</a></span>
+<span class="normal"><a href="#__codelineno-5-51">51</a></span>
+<span class="normal"><a href="#__codelineno-5-52">52</a></span>
+<span class="normal"><a href="#__codelineno-5-53">53</a></span>
+<span class="normal"><a href="#__codelineno-5-54">54</a></span>
+<span class="normal"><a href="#__codelineno-5-55">55</a></span>
+<span class="normal"><a href="#__codelineno-5-56">56</a></span>
+<span class="normal"><a href="#__codelineno-5-57">57</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-45"><a id="__codelineno-5-45" name="__codelineno-5-45"></a><span class="err">check</span><span class="w"> </span><span class="s2">&quot;grafana_health_check&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-46"><a id="__codelineno-5-46" name="__codelineno-5-46"></a><span class="w">  </span><span class="kr">data</span><span class="w"> </span><span class="nc">&quot;http&quot;</span><span class="w"> </span><span class="nv">&quot;test_access&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-47"><a id="__codelineno-5-47" name="__codelineno-5-47"></a><span class="w">    </span><span class="na">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;http://${aws_instance.grafana_server.public_ip}:3000&quot;</span>
+</span><span id="__span-5-48"><a id="__codelineno-5-48" name="__codelineno-5-48"></a><span class="w">    </span><span class="nb">retry</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-49"><a id="__codelineno-5-49" name="__codelineno-5-49"></a><span class="w">      </span><span class="na">attempts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>
+</span><span id="__span-5-50"><a id="__codelineno-5-50" name="__codelineno-5-50"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-5-51"><a id="__codelineno-5-51" name="__codelineno-5-51"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-5-52"><a id="__codelineno-5-52" name="__codelineno-5-52"></a>
+</span><span id="__span-5-53"><a id="__codelineno-5-53" name="__codelineno-5-53"></a><span class="w">  </span><span class="nb">assert</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-54"><a id="__codelineno-5-54" name="__codelineno-5-54"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">data.http.test_access.status_code</span><span class="w"> </span><span class="p">==</span><span class="w"> </span><span class="m">200</span>
+</span><span id="__span-5-55"><a id="__codelineno-5-55" name="__codelineno-5-55"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Grafana server is not accessible!&quot;</span>
+</span><span id="__span-5-56"><a id="__codelineno-5-56" name="__codelineno-5-56"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-5-57"><a id="__codelineno-5-57" name="__codelineno-5-57"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="variable-validation">Variable Validation</h3>
+<p>Variable validation has also been implemented to enforce specific values, or a match against a pattern:</p>
+<div class="language-hcl highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">tofu/variables.tf</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-6-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-6-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-6-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-6-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-6-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-6-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-6-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-6-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-6-10">10</a></span>
+<span class="normal"><a href="#__codelineno-6-11">11</a></span>
+<span class="normal"><a href="#__codelineno-6-12">12</a></span>
+<span class="normal"><a href="#__codelineno-6-13">13</a></span>
+<span class="normal"><a href="#__codelineno-6-14">14</a></span>
+<span class="normal"><a href="#__codelineno-6-15">15</a></span>
+<span class="normal"><a href="#__codelineno-6-16">16</a></span>
+<span class="normal"><a href="#__codelineno-6-17">17</a></span>
+<span class="normal"><a href="#__codelineno-6-18">18</a></span>
+<span class="normal"><a href="#__codelineno-6-19">19</a></span>
+<span class="normal"><a href="#__codelineno-6-20">20</a></span>
+<span class="normal"><a href="#__codelineno-6-21">21</a></span>
+<span class="normal"><a href="#__codelineno-6-22">22</a></span>
+<span class="normal"><a href="#__codelineno-6-23">23</a></span>
+<span class="normal"><a href="#__codelineno-6-24">24</a></span>
+<span class="normal"><a href="#__codelineno-6-25">25</a></span>
+<span class="normal"><a href="#__codelineno-6-26">26</a></span>
+<span class="normal"><a href="#__codelineno-6-27">27</a></span>
+<span class="normal"><a href="#__codelineno-6-28">28</a></span>
+<span class="normal"><a href="#__codelineno-6-29">29</a></span>
+<span class="normal"><a href="#__codelineno-6-30">30</a></span>
+<span class="normal"><a href="#__codelineno-6-31">31</a></span>
+<span class="normal"><a href="#__codelineno-6-32">32</a></span>
+<span class="normal"><a href="#__codelineno-6-33">33</a></span>
+<span class="normal"><a href="#__codelineno-6-34">34</a></span>
+<span class="normal"><a href="#__codelineno-6-35">35</a></span>
+<span class="normal"><a href="#__codelineno-6-36">36</a></span>
+<span class="normal"><a href="#__codelineno-6-37">37</a></span>
+<span class="normal"><a href="#__codelineno-6-38">38</a></span>
+<span class="normal"><a href="#__codelineno-6-39">39</a></span>
+<span class="normal"><a href="#__codelineno-6-40">40</a></span>
+<span class="normal"><a href="#__codelineno-6-41">41</a></span>
+<span class="normal"><a href="#__codelineno-6-42">42</a></span>
+<span class="normal"><a href="#__codelineno-6-43">43</a></span>
+<span class="normal"><a href="#__codelineno-6-44">44</a></span>
+<span class="normal"><a href="#__codelineno-6-45">45</a></span>
+<span class="normal"><a href="#__codelineno-6-46">46</a></span>
+<span class="normal"><a href="#__codelineno-6-47">47</a></span>
+<span class="normal"><a href="#__codelineno-6-48">48</a></span>
+<span class="normal"><a href="#__codelineno-6-49">49</a></span>
+<span class="normal"><a href="#__codelineno-6-50">50</a></span>
+<span class="normal"><a href="#__codelineno-6-51">51</a></span>
+<span class="normal"><a href="#__codelineno-6-52">52</a></span>
+<span class="normal"><a href="#__codelineno-6-53">53</a></span>
+<span class="normal"><a href="#__codelineno-6-54">54</a></span>
+<span class="normal"><a href="#__codelineno-6-55">55</a></span>
+<span class="normal"><a href="#__codelineno-6-56">56</a></span>
+<span class="normal"><a href="#__codelineno-6-57">57</a></span>
+<span class="normal"><a href="#__codelineno-6-58">58</a></span>
+<span class="normal"><a href="#__codelineno-6-59">59</a></span>
+<span class="normal"><a href="#__codelineno-6-60">60</a></span>
+<span class="normal"><a href="#__codelineno-6-61">61</a></span>
+<span class="normal"><a href="#__codelineno-6-62">62</a></span>
+<span class="normal"><a href="#__codelineno-6-63">63</a></span>
+<span class="normal"><a href="#__codelineno-6-64">64</a></span>
+<span class="normal"><a href="#__codelineno-6-65">65</a></span>
+<span class="normal"><a href="#__codelineno-6-66">66</a></span>
+<span class="normal"><a href="#__codelineno-6-67">67</a></span>
+<span class="normal"><a href="#__codelineno-6-68">68</a></span>
+<span class="normal"><a href="#__codelineno-6-69">69</a></span>
+<span class="normal"><a href="#__codelineno-6-70">70</a></span>
+<span class="normal"><a href="#__codelineno-6-71">71</a></span>
+<span class="normal"><a href="#__codelineno-6-72">72</a></span>
+<span class="normal"><a href="#__codelineno-6-73">73</a></span>
+<span class="normal"><a href="#__codelineno-6-74">74</a></span>
+<span class="normal"><a href="#__codelineno-6-75">75</a></span>
+<span class="normal"><a href="#__codelineno-6-76">76</a></span>
+<span class="normal"><a href="#__codelineno-6-77">77</a></span>
+<span class="normal"><a href="#__codelineno-6-78">78</a></span>
+<span class="normal"><a href="#__codelineno-6-79">79</a></span>
+<span class="normal"><a href="#__codelineno-6-80">80</a></span>
+<span class="normal"><a href="#__codelineno-6-81">81</a></span>
+<span class="normal"><a href="#__codelineno-6-82">82</a></span>
+<span class="normal"><a href="#__codelineno-6-83">83</a></span>
+<span class="normal"><a href="#__codelineno-6-84">84</a></span>
+<span class="normal"><a href="#__codelineno-6-85">85</a></span>
+<span class="normal"><a href="#__codelineno-6-86">86</a></span>
+<span class="normal"><a href="#__codelineno-6-87">87</a></span>
+<span class="normal"><a href="#__codelineno-6-88">88</a></span>
+<span class="normal"><a href="#__codelineno-6-89">89</a></span>
+<span class="normal"><a href="#__codelineno-6-90">90</a></span>
+<span class="normal"><a href="#__codelineno-6-91">91</a></span>
+<span class="normal"><a href="#__codelineno-6-92">92</a></span>
+<span class="normal"><a href="#__codelineno-6-93">93</a></span>
+<span class="normal"><a href="#__codelineno-6-94">94</a></span>
+<span class="normal"><a href="#__codelineno-6-95">95</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;environment&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Name of the environment infrastrucutre is being deployed to&quot;</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4"></a>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">contains</span><span class="p">([</span><span class="s2">&quot;dev&quot;, &quot;prod&quot;</span><span class="p">],</span><span class="w"> </span><span class="nv">var.environment</span><span class="p">)</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${format(&quot;%#v&quot;, var.environment)} is not a valid environment. Allowed values are: ${format(&quot;%#v&quot;, [&quot;mgmt&quot;, &quot;dev&quot;, &quot;test&quot;, &quot;prod&quot;])}!&quot;</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="p">}</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10"></a>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;region&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;AWS region to deploy resources to&quot;</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14"></a>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">contains</span><span class="p">([</span><span class="s2">&quot;eu-west-2&quot;</span><span class="p">],</span><span class="w"> </span><span class="nv">var.region</span><span class="p">)</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${format(&quot;%#v&quot;, var.region)} is not a valid region. Allowed values are: ${format(&quot;%#v&quot;, [&quot;eu-west-2&quot;])}!&quot;</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19"></a><span class="p">}</span>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20"></a>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;instance_name&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Name of the Grafana instance&quot;</span>
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24"></a>
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">can</span><span class="p">(</span><span class="nf">regex</span><span class="p">(</span><span class="s2">&quot;^[a-z0-9-]+$&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">var.instance_name</span><span class="p">))</span>
+</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${format(&quot;%#v&quot;, var.instance_name)} is not a valid instance name. Ensure your instance name is alphanumeric and lowercase!&quot;</span>
+</span><span id="__span-6-28"><a id="__codelineno-6-28" name="__codelineno-6-28"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-6-29"><a id="__codelineno-6-29" name="__codelineno-6-29"></a><span class="p">}</span>
+</span><span id="__span-6-30"><a id="__codelineno-6-30" name="__codelineno-6-30"></a>
+</span><span id="__span-6-31"><a id="__codelineno-6-31" name="__codelineno-6-31"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;instance_type&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-32"><a id="__codelineno-6-32" name="__codelineno-6-32"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+</span><span id="__span-6-33"><a id="__codelineno-6-33" name="__codelineno-6-33"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Instance size to use for the Grafana server&quot;</span>
+</span><span id="__span-6-34"><a id="__codelineno-6-34" name="__codelineno-6-34"></a>
+</span><span id="__span-6-35"><a id="__codelineno-6-35" name="__codelineno-6-35"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-36"><a id="__codelineno-6-36" name="__codelineno-6-36"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">contains</span><span class="p">([</span><span class="s2">&quot;t3.micro&quot;</span><span class="p">],</span><span class="w"> </span><span class="nv">var.instance_type</span><span class="p">)</span>
+</span><span id="__span-6-37"><a id="__codelineno-6-37" name="__codelineno-6-37"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${format(&quot;%#v&quot;, var.instance_type)} is not a valid instance type. Allowed values are: ${format(&quot;%#v&quot;, [&quot;t3.micro&quot;])}!&quot;</span>
+</span><span id="__span-6-38"><a id="__codelineno-6-38" name="__codelineno-6-38"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-6-39"><a id="__codelineno-6-39" name="__codelineno-6-39"></a><span class="p">}</span>
+</span><span id="__span-6-40"><a id="__codelineno-6-40" name="__codelineno-6-40"></a>
+</span><span id="__span-6-41"><a id="__codelineno-6-41" name="__codelineno-6-41"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;volume_size&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-42"><a id="__codelineno-6-42" name="__codelineno-6-42"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">number</span>
+</span><span id="__span-6-43"><a id="__codelineno-6-43" name="__codelineno-6-43"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Size of the root EBS volume (in GB) for the Grafana instance&quot;</span>
+</span><span id="__span-6-44"><a id="__codelineno-6-44" name="__codelineno-6-44"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">8</span>
+</span><span id="__span-6-45"><a id="__codelineno-6-45" name="__codelineno-6-45"></a>
+</span><span id="__span-6-46"><a id="__codelineno-6-46" name="__codelineno-6-46"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-47"><a id="__codelineno-6-47" name="__codelineno-6-47"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.volume_size</span><span class="w"> </span><span class="err">&lt;</span><span class="p">=</span><span class="w"> </span><span class="m">10</span>
+</span><span id="__span-6-48"><a id="__codelineno-6-48" name="__codelineno-6-48"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${format(&quot;%#v&quot;, var.volume_size)} is not valid! It must be less than or equal to 10.&quot;</span>
+</span><span id="__span-6-49"><a id="__codelineno-6-49" name="__codelineno-6-49"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-6-50"><a id="__codelineno-6-50" name="__codelineno-6-50"></a><span class="p">}</span>
+</span><span id="__span-6-51"><a id="__codelineno-6-51" name="__codelineno-6-51"></a>
+</span><span id="__span-6-52"><a id="__codelineno-6-52" name="__codelineno-6-52"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;additional_tags&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-53"><a id="__codelineno-6-53" name="__codelineno-6-53"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span>
+</span><span id="__span-6-54"><a id="__codelineno-6-54" name="__codelineno-6-54"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Apply additional tags to Grafana instance&quot;</span>
+</span><span id="__span-6-55"><a id="__codelineno-6-55" name="__codelineno-6-55"></a>
+</span><span id="__span-6-56"><a id="__codelineno-6-56" name="__codelineno-6-56"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-57"><a id="__codelineno-6-57" name="__codelineno-6-57"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">alltrue</span><span class="p">([</span><span class="err">for</span><span class="w"> </span><span class="err">key</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nf">keys</span><span class="p">(</span><span class="nv">var.additional_tags</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nf">can</span><span class="p">(</span><span class="nf">regex</span><span class="p">(</span><span class="s2">&quot;^[a-z0-9-]+$&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">key</span><span class="p">))])</span>
+</span><span id="__span-6-58"><a id="__codelineno-6-58" name="__codelineno-6-58"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;All keys in your additional tags must be alphanumeric and lowercase! If word seperation is present, use hyphens (-).&quot;</span>
+</span><span id="__span-6-59"><a id="__codelineno-6-59" name="__codelineno-6-59"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-6-60"><a id="__codelineno-6-60" name="__codelineno-6-60"></a>
+</span><span id="__span-6-61"><a id="__codelineno-6-61" name="__codelineno-6-61"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-62"><a id="__codelineno-6-62" name="__codelineno-6-62"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">anytrue</span><span class="p">([</span><span class="err">for</span><span class="w"> </span><span class="err">key</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nf">keys</span><span class="p">(</span><span class="nv">var.additional_tags</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="err">startswith</span><span class="p">(</span><span class="s2">&quot;aws:&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">key</span><span class="p">)])</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="no">false</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="no">true</span>
+</span><span id="__span-6-63"><a id="__codelineno-6-63" name="__codelineno-6-63"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;You cannot use tags that begin with &#39;aws:&#39; as they are reserved for AWS use.&quot;</span>
+</span><span id="__span-6-64"><a id="__codelineno-6-64" name="__codelineno-6-64"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-6-65"><a id="__codelineno-6-65" name="__codelineno-6-65"></a>
+</span><span id="__span-6-66"><a id="__codelineno-6-66" name="__codelineno-6-66"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-67"><a id="__codelineno-6-67" name="__codelineno-6-67"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">alltrue</span><span class="p">([</span><span class="err">for</span><span class="w"> </span><span class="err">key</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nf">keys</span><span class="p">(</span><span class="nv">var.additional_tags</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="err">key</span><span class="p">)</span><span class="w"> </span><span class="err">&gt;</span><span class="p">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="err">&amp;&amp;</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="err">key</span><span class="p">)</span><span class="w"> </span><span class="err">&lt;</span><span class="p">=</span><span class="w"> </span><span class="m">128</span><span class="p">])</span>
+</span><span id="__span-6-68"><a id="__codelineno-6-68" name="__codelineno-6-68"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;All keys in your additional tags must be at least 1 character long and no more than 128 characters long.&quot;</span>
+</span><span id="__span-6-69"><a id="__codelineno-6-69" name="__codelineno-6-69"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-6-70"><a id="__codelineno-6-70" name="__codelineno-6-70"></a>
+</span><span id="__span-6-71"><a id="__codelineno-6-71" name="__codelineno-6-71"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-72"><a id="__codelineno-6-72" name="__codelineno-6-72"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">alltrue</span><span class="p">([</span><span class="err">for</span><span class="w"> </span><span class="err">value</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nf">values</span><span class="p">(</span><span class="nv">var.additional_tags</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="err">value</span><span class="p">)</span><span class="w"> </span><span class="err">&gt;</span><span class="p">=</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="err">&amp;&amp;</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="err">value</span><span class="p">)</span><span class="w"> </span><span class="err">&lt;</span><span class="p">=</span><span class="w"> </span><span class="m">256</span><span class="p">])</span>
+</span><span id="__span-6-73"><a id="__codelineno-6-73" name="__codelineno-6-73"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;All values in your additional tags must be at least 0 characters long and no more than 256 characters long.&quot;</span>
+</span><span id="__span-6-74"><a id="__codelineno-6-74" name="__codelineno-6-74"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-6-75"><a id="__codelineno-6-75" name="__codelineno-6-75"></a><span class="p">}</span>
+</span><span id="__span-6-76"><a id="__codelineno-6-76" name="__codelineno-6-76"></a>
+</span><span id="__span-6-77"><a id="__codelineno-6-77" name="__codelineno-6-77"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;deployment_role_arn&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-78"><a id="__codelineno-6-78" name="__codelineno-6-78"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+</span><span id="__span-6-79"><a id="__codelineno-6-79" name="__codelineno-6-79"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;The ARN of the role to assume when deploying resources&quot;</span>
+</span><span id="__span-6-80"><a id="__codelineno-6-80" name="__codelineno-6-80"></a>
+</span><span id="__span-6-81"><a id="__codelineno-6-81" name="__codelineno-6-81"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-82"><a id="__codelineno-6-82" name="__codelineno-6-82"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">can</span><span class="p">(</span><span class="nf">regex</span><span class="p">(</span><span class="s2">&quot;^arn:aws:iam::[0-9]{12}:role/[a-zA-Z0-9+=,.@_-]+$&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">var.deployment_role_arn</span><span class="p">))</span>
+</span><span id="__span-6-83"><a id="__codelineno-6-83" name="__codelineno-6-83"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${format(&quot;%#v&quot;, var.deployment_role_arn)} is not a valid ARN!&quot;</span>
+</span><span id="__span-6-84"><a id="__codelineno-6-84" name="__codelineno-6-84"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-6-85"><a id="__codelineno-6-85" name="__codelineno-6-85"></a><span class="p">}</span>
+</span><span id="__span-6-86"><a id="__codelineno-6-86" name="__codelineno-6-86"></a>
+</span><span id="__span-6-87"><a id="__codelineno-6-87" name="__codelineno-6-87"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;role_session_name&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-88"><a id="__codelineno-6-88" name="__codelineno-6-88"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+</span><span id="__span-6-89"><a id="__codelineno-6-89" name="__codelineno-6-89"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;The name of the session when assuming the role&quot;</span>
+</span><span id="__span-6-90"><a id="__codelineno-6-90" name="__codelineno-6-90"></a>
+</span><span id="__span-6-91"><a id="__codelineno-6-91" name="__codelineno-6-91"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-92"><a id="__codelineno-6-92" name="__codelineno-6-92"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">can</span><span class="p">(</span><span class="nf">regex</span><span class="p">(</span><span class="s2">&quot;^[a-zA-Z0-9+=,.@_-]+$&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">var.role_session_name</span><span class="p">))</span>
+</span><span id="__span-6-93"><a id="__codelineno-6-93" name="__codelineno-6-93"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${format(&quot;%#v&quot;, var.role_session_name)} is not a valid session name!&quot;</span>
+</span><span id="__span-6-94"><a id="__codelineno-6-94" name="__codelineno-6-94"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-6-95"><a id="__codelineno-6-95" name="__codelineno-6-95"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>I won't go into massive detail about each one, as some use the same techniques, but give a overview of clear differences.</p>
+<p>Variable validations are defined using the <code>validation</code> block. A variable can have zero to many <code>validation</code> blocks as you see fit. They are made up of two parameters only - <code>condition</code> and <code>error_message</code>:</p>
+<div class="language-hcl highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span>
+<span class="normal"><a href="#__codelineno-7-2">2</a></span>
+<span class="normal"><a href="#__codelineno-7-3">3</a></span>
+<span class="normal"><a href="#__codelineno-7-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w">  </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">  </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>The condition MUST return a boolean, <code>true</code> or <code>false</code>. The former meaning the validation has passed, and the latter raising the <code>error_message</code> and stopping the specific action with an error, such as <code>tofu plan</code>.</p>
+<p><strong>Example 1</strong></p>
+<div class="language-hcl highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span>
+<span class="normal"><a href="#__codelineno-8-2">2</a></span>
+<span class="normal"><a href="#__codelineno-8-3">3</a></span>
+<span class="normal"><a href="#__codelineno-8-4">4</a></span>
+<span class="normal"><a href="#__codelineno-8-5">5</a></span>
+<span class="normal"><a href="#__codelineno-8-6">6</a></span>
+<span class="normal"><a href="#__codelineno-8-7">7</a></span>
+<span class="normal"><a href="#__codelineno-8-8">8</a></span>
+<span class="normal"><a href="#__codelineno-8-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;environment&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Name of the environment infrastructure is being deployed to&quot;</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4"></a>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">contains</span><span class="p">([</span><span class="s2">&quot;dev&quot;, &quot;prod&quot;</span><span class="p">],</span><span class="w"> </span><span class="nv">var.environment</span><span class="p">)</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${format(&quot;%#v&quot;, var.environment)} is not a valid environment. Allowed values are: ${format(&quot;%#v&quot;, [&quot;mgmt&quot;, &quot;dev&quot;, &quot;test&quot;, &quot;prod&quot;])}!&quot;</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>The <code>contains()</code> function returns <code>true</code> or <code>false</code> depending whether <code>var.environment</code> contains <code>dev</code> or <code>prod</code>. We use the <code>format()</code> function in the error message to present the value that is invalid to the user. The <code>%#v</code> statement tells the <code>format()</code> function to escape it using JSON which means we can safe print in the terminal.</p>
+<p><strong>Example 2</strong></p>
+<div class="language-hcl highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-21">21</a></span>
+<span class="normal"><a href="#__codelineno-9-22">22</a></span>
+<span class="normal"><a href="#__codelineno-9-23">23</a></span>
+<span class="normal"><a href="#__codelineno-9-24">24</a></span>
+<span class="normal"><a href="#__codelineno-9-25">25</a></span>
+<span class="normal"><a href="#__codelineno-9-26">26</a></span>
+<span class="normal"><a href="#__codelineno-9-27">27</a></span>
+<span class="normal"><a href="#__codelineno-9-28">28</a></span>
+<span class="normal"><a href="#__codelineno-9-29">29</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-9-21"><a id="__codelineno-9-21" name="__codelineno-9-21"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;instance_name&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-22"><a id="__codelineno-9-22" name="__codelineno-9-22"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+</span><span id="__span-9-23"><a id="__codelineno-9-23" name="__codelineno-9-23"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Name of the Grafana instance&quot;</span>
+</span><span id="__span-9-24"><a id="__codelineno-9-24" name="__codelineno-9-24"></a>
+</span><span id="__span-9-25"><a id="__codelineno-9-25" name="__codelineno-9-25"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-26"><a id="__codelineno-9-26" name="__codelineno-9-26"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">can</span><span class="p">(</span><span class="nf">regex</span><span class="p">(</span><span class="s2">&quot;^[a-z0-9-]+$&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">var.instance_name</span><span class="p">))</span>
+</span><span id="__span-9-27"><a id="__codelineno-9-27" name="__codelineno-9-27"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${format(&quot;%#v&quot;, var.instance_name)} is not a valid instance name. Ensure your instance name is alphanumeric and lowercase!&quot;</span>
+</span><span id="__span-9-28"><a id="__codelineno-9-28" name="__codelineno-9-28"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-9-29"><a id="__codelineno-9-29" name="__codelineno-9-29"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>This example uses the <code>can()</code> and <code>regex()</code> functions to check the name of the instance is lowercase, alphanumeric and contains hyphens only. The <code>regex()</code> function would return a value if it matches, but not a boolean. This is where we use the <code>can()</code> function. If the input of <code>can()</code> succeeds, which in this case is the <code>regex()</code> function, it returns <code>true</code>, if the input errors, which would mean <code>regex()</code> didn't find a match, <code>can()</code> would return <code>false</code>. </p>
+<p>Like the example above, we use the <code>format()</code> function to present the bad value to the user.</p>
+<p><strong>Example 3</strong></p>
+<div class="language-hcl highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-41">41</a></span>
+<span class="normal"><a href="#__codelineno-10-42">42</a></span>
+<span class="normal"><a href="#__codelineno-10-43">43</a></span>
+<span class="normal"><a href="#__codelineno-10-44">44</a></span>
+<span class="normal"><a href="#__codelineno-10-45">45</a></span>
+<span class="normal"><a href="#__codelineno-10-46">46</a></span>
+<span class="normal"><a href="#__codelineno-10-47">47</a></span>
+<span class="normal"><a href="#__codelineno-10-48">48</a></span>
+<span class="normal"><a href="#__codelineno-10-49">49</a></span>
+<span class="normal"><a href="#__codelineno-10-50">50</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-10-41"><a id="__codelineno-10-41" name="__codelineno-10-41"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;volume_size&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-42"><a id="__codelineno-10-42" name="__codelineno-10-42"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">number</span>
+</span><span id="__span-10-43"><a id="__codelineno-10-43" name="__codelineno-10-43"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Size of the root EBS volume (in GB) for the Grafana instance&quot;</span>
+</span><span id="__span-10-44"><a id="__codelineno-10-44" name="__codelineno-10-44"></a><span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">8</span>
+</span><span id="__span-10-45"><a id="__codelineno-10-45" name="__codelineno-10-45"></a>
+</span><span id="__span-10-46"><a id="__codelineno-10-46" name="__codelineno-10-46"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-47"><a id="__codelineno-10-47" name="__codelineno-10-47"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.volume_size</span><span class="w"> </span><span class="err">&lt;</span><span class="p">=</span><span class="w"> </span><span class="m">10</span>
+</span><span id="__span-10-48"><a id="__codelineno-10-48" name="__codelineno-10-48"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${format(&quot;%#v&quot;, var.volume_size)} is not valid! It must be less than or equal to 10.&quot;</span>
+</span><span id="__span-10-49"><a id="__codelineno-10-49" name="__codelineno-10-49"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-10-50"><a id="__codelineno-10-50" name="__codelineno-10-50"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>This example uses a condition to check whether the volume size is less than, or equal too 10. If it's bigger, it returns <code>false</code> and if it is 10 or less, it returns <code>true</code></p>
+<p><strong>Example 4</strong></p>
+<div class="language-hcl highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-11-52">52</a></span>
+<span class="normal"><a href="#__codelineno-11-53">53</a></span>
+<span class="normal"><a href="#__codelineno-11-54">54</a></span>
+<span class="normal"><a href="#__codelineno-11-55">55</a></span>
+<span class="normal"><a href="#__codelineno-11-56">56</a></span>
+<span class="normal"><a href="#__codelineno-11-57">57</a></span>
+<span class="normal"><a href="#__codelineno-11-58">58</a></span>
+<span class="normal"><a href="#__codelineno-11-59">59</a></span>
+<span class="normal"><a href="#__codelineno-11-60">60</a></span>
+<span class="normal"><a href="#__codelineno-11-61">61</a></span>
+<span class="normal"><a href="#__codelineno-11-62">62</a></span>
+<span class="normal"><a href="#__codelineno-11-63">63</a></span>
+<span class="normal"><a href="#__codelineno-11-64">64</a></span>
+<span class="normal"><a href="#__codelineno-11-65">65</a></span>
+<span class="normal"><a href="#__codelineno-11-66">66</a></span>
+<span class="normal"><a href="#__codelineno-11-67">67</a></span>
+<span class="normal"><a href="#__codelineno-11-68">68</a></span>
+<span class="normal"><a href="#__codelineno-11-69">69</a></span>
+<span class="normal"><a href="#__codelineno-11-70">70</a></span>
+<span class="normal"><a href="#__codelineno-11-71">71</a></span>
+<span class="normal"><a href="#__codelineno-11-72">72</a></span>
+<span class="normal"><a href="#__codelineno-11-73">73</a></span>
+<span class="normal"><a href="#__codelineno-11-74">74</a></span>
+<span class="normal"><a href="#__codelineno-11-75">75</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-11-52"><a id="__codelineno-11-52" name="__codelineno-11-52"></a><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;additional_tags&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-11-53"><a id="__codelineno-11-53" name="__codelineno-11-53"></a><span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span>
+</span><span id="__span-11-54"><a id="__codelineno-11-54" name="__codelineno-11-54"></a><span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Apply additional tags to Grafana instance&quot;</span>
+</span><span id="__span-11-55"><a id="__codelineno-11-55" name="__codelineno-11-55"></a>
+</span><span id="__span-11-56"><a id="__codelineno-11-56" name="__codelineno-11-56"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-11-57"><a id="__codelineno-11-57" name="__codelineno-11-57"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">alltrue</span><span class="p">([</span><span class="err">for</span><span class="w"> </span><span class="err">key</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nf">keys</span><span class="p">(</span><span class="nv">var.additional_tags</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nf">can</span><span class="p">(</span><span class="nf">regex</span><span class="p">(</span><span class="s2">&quot;^[a-z0-9-]+$&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">key</span><span class="p">))])</span>
+</span><span id="__span-11-58"><a id="__codelineno-11-58" name="__codelineno-11-58"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;All keys in your additional tags must be alphanumeric and lowercase! If word separation is present, use hyphens (-).&quot;</span>
+</span><span id="__span-11-59"><a id="__codelineno-11-59" name="__codelineno-11-59"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-11-60"><a id="__codelineno-11-60" name="__codelineno-11-60"></a>
+</span><span id="__span-11-61"><a id="__codelineno-11-61" name="__codelineno-11-61"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-11-62"><a id="__codelineno-11-62" name="__codelineno-11-62"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">anytrue</span><span class="p">([</span><span class="err">for</span><span class="w"> </span><span class="err">key</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nf">keys</span><span class="p">(</span><span class="nv">var.additional_tags</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="err">startswith</span><span class="p">(</span><span class="s2">&quot;aws:&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">key</span><span class="p">)])</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="no">false</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="no">true</span>
+</span><span id="__span-11-63"><a id="__codelineno-11-63" name="__codelineno-11-63"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;You cannot use tags that begin with &#39;aws:&#39; as they are reserved for AWS use.&quot;</span>
+</span><span id="__span-11-64"><a id="__codelineno-11-64" name="__codelineno-11-64"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-11-65"><a id="__codelineno-11-65" name="__codelineno-11-65"></a>
+</span><span id="__span-11-66"><a id="__codelineno-11-66" name="__codelineno-11-66"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-11-67"><a id="__codelineno-11-67" name="__codelineno-11-67"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">alltrue</span><span class="p">([</span><span class="err">for</span><span class="w"> </span><span class="err">key</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nf">keys</span><span class="p">(</span><span class="nv">var.additional_tags</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="err">key</span><span class="p">)</span><span class="w"> </span><span class="err">&gt;</span><span class="p">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="err">&amp;&amp;</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="err">key</span><span class="p">)</span><span class="w"> </span><span class="err">&lt;</span><span class="p">=</span><span class="w"> </span><span class="m">128</span><span class="p">])</span>
+</span><span id="__span-11-68"><a id="__codelineno-11-68" name="__codelineno-11-68"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;All keys in your additional tags must be at least 1 character long and no more than 128 characters long.&quot;</span>
+</span><span id="__span-11-69"><a id="__codelineno-11-69" name="__codelineno-11-69"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-11-70"><a id="__codelineno-11-70" name="__codelineno-11-70"></a>
+</span><span id="__span-11-71"><a id="__codelineno-11-71" name="__codelineno-11-71"></a><span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-11-72"><a id="__codelineno-11-72" name="__codelineno-11-72"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">alltrue</span><span class="p">([</span><span class="err">for</span><span class="w"> </span><span class="err">value</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nf">values</span><span class="p">(</span><span class="nv">var.additional_tags</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="err">value</span><span class="p">)</span><span class="w"> </span><span class="err">&gt;</span><span class="p">=</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="err">&amp;&amp;</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="err">value</span><span class="p">)</span><span class="w"> </span><span class="err">&lt;</span><span class="p">=</span><span class="w"> </span><span class="m">256</span><span class="p">])</span>
+</span><span id="__span-11-73"><a id="__codelineno-11-73" name="__codelineno-11-73"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;All values in your additional tags must be at least 0 characters long and no more than 256 characters long.&quot;</span>
+</span><span id="__span-11-74"><a id="__codelineno-11-74" name="__codelineno-11-74"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-11-75"><a id="__codelineno-11-75" name="__codelineno-11-75"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>As this variable is a <code>map(string)</code>, we need to validate the entire input. The validation in this does multiple things which ensures it meets AWS recommendations for tagging standards and requirements.</p>
+<p>Here we loop over all the keys in the map using the <code>keys()</code> function. This returns a list of keys from a <code>map</code>. We then use the <code>startswith()</code> function to check whether each key starts with <code>aws:</code>. If it does, it returns <code>true</code> for that key or <code>false</code> if it starts with something else. Now this is a reserved tag that you cannot create as AWS won't allow you too. </p>
+<p>Assuming we have 5 additional tags, meaning 5 keys, and all starting with <code>aws:</code> our loop now looks like this:</p>
+<div class="language-hcl highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="p">[</span><span class="nb">true, true, true, true, true</span><span class="p">]</span>
+</span></code></pre></div>
+<p>We then use the <code>anytrue()</code> function, which takes a list and if any items in the list are/contain <code>true</code> it returns <code>true</code> or <code>false</code>:</p>
+<div class="language-hcl highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="err">&gt;</span><span class="w"> </span><span class="nf">anytrue</span><span class="p">([</span><span class="nb">true, true, true, true, true</span><span class="p">])</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="no">true</span>
+</span></code></pre></div>
+<p>Now obviously we cannot create a tag starting with <code>aws:</code> so we use conditional logic in the form of: <code>condition ? true_value : false_value</code>. So since we know it our example returns <code>true</code> in the condition, so now we have told OpenTofu to report this as <code>false</code> - meaning raise the validation error!</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>There are other ways you could implement this, such as using <code>!</code> in front of a function which basically negates the output, essentially reversing the normal operation. So if <code>anytrue()</code> returns <code>true</code>, <code>!anytrue()</code> would return <code>false</code>.</p>
+<p>I super recommend using <code>tofu console</code> to test custom validation logic out as it's super powerful. You don't have to run a <code>tofu plan</code> each time, just run <code>tofu console</code> and you get a sandbox to test OpenTofu functions!</p>
+</div>
+<h3 id="checks">Checks</h3>
+<p><code>check</code> blocks are an additional way of validation, but instead of erroring out the run it shows a warning instead and doesn't interfere with the OpenTofu operation.</p>
+<p>We use one <code>check</code> block inside this project:</p>
+<div class="language-hcl highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">tofu/instance.tf</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-14-45">45</a></span>
+<span class="normal"><a href="#__codelineno-14-46">46</a></span>
+<span class="normal"><a href="#__codelineno-14-47">47</a></span>
+<span class="normal"><a href="#__codelineno-14-48">48</a></span>
+<span class="normal"><a href="#__codelineno-14-49">49</a></span>
+<span class="normal"><a href="#__codelineno-14-50">50</a></span>
+<span class="normal"><a href="#__codelineno-14-51">51</a></span>
+<span class="normal"><a href="#__codelineno-14-52">52</a></span>
+<span class="normal"><a href="#__codelineno-14-53">53</a></span>
+<span class="normal"><a href="#__codelineno-14-54">54</a></span>
+<span class="normal"><a href="#__codelineno-14-55">55</a></span>
+<span class="normal"><a href="#__codelineno-14-56">56</a></span>
+<span class="normal"><a href="#__codelineno-14-57">57</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-14-45"><a id="__codelineno-14-45" name="__codelineno-14-45"></a><span class="err">check</span><span class="w"> </span><span class="s2">&quot;grafana_health_check&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-46"><a id="__codelineno-14-46" name="__codelineno-14-46"></a><span class="w">  </span><span class="kr">data</span><span class="w"> </span><span class="nc">&quot;http&quot;</span><span class="w"> </span><span class="nv">&quot;test_access&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-47"><a id="__codelineno-14-47" name="__codelineno-14-47"></a><span class="w">    </span><span class="na">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;http://${aws_instance.grafana_server.public_ip}:3000&quot;</span>
+</span><span id="__span-14-48"><a id="__codelineno-14-48" name="__codelineno-14-48"></a><span class="w">    </span><span class="nb">retry</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-49"><a id="__codelineno-14-49" name="__codelineno-14-49"></a><span class="w">      </span><span class="na">attempts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>
+</span><span id="__span-14-50"><a id="__codelineno-14-50" name="__codelineno-14-50"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-14-51"><a id="__codelineno-14-51" name="__codelineno-14-51"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-14-52"><a id="__codelineno-14-52" name="__codelineno-14-52"></a>
+</span><span id="__span-14-53"><a id="__codelineno-14-53" name="__codelineno-14-53"></a><span class="w">  </span><span class="nb">assert</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-54"><a id="__codelineno-14-54" name="__codelineno-14-54"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">data.http.test_access.status_code</span><span class="w"> </span><span class="p">==</span><span class="w"> </span><span class="m">200</span>
+</span><span id="__span-14-55"><a id="__codelineno-14-55" name="__codelineno-14-55"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Grafana server is not accessible!&quot;</span>
+</span><span id="__span-14-56"><a id="__codelineno-14-56" name="__codelineno-14-56"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-14-57"><a id="__codelineno-14-57" name="__codelineno-14-57"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>Here we're using the <code>http</code> provider to check whether it can access the Grafana instance we have created on AWS! One key difference between variable validation and check blocks are that checks use <code>assert</code> instead of <code>validation</code> - but the logic in how they are evaluated is the same. If true, warning not raised, otherwise raise warning.</p>
+<p>The <code>http</code> data source is referred to as a <code>scoped</code> data source, which basically means it cannot be accessed outside of the <code>check</code> block that contains it.</p>
+<h3 id="testing">Testing</h3>
+<p>We can use the <code>tofu test</code> framework to build out tests to further validate configuration. As part of this minicamp, we've got 3 test files with multiple tests. An example is below:</p>
+<div class="language-hcl highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">tofu/tests/account.tftest.hcl</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-15-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-15-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-15-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-15-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-15-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-15-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-15-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-15-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-15-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-15-10">10</a></span>
+<span class="normal"><a href="#__codelineno-15-11">11</a></span>
+<span class="normal"><a href="#__codelineno-15-12">12</a></span>
+<span class="normal"><a href="#__codelineno-15-13">13</a></span>
+<span class="normal"><a href="#__codelineno-15-14">14</a></span>
+<span class="normal"><a href="#__codelineno-15-15">15</a></span>
+<span class="normal"><a href="#__codelineno-15-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="err">run</span><span class="w"> </span><span class="s2">&quot;deployment_account&quot;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="w">  </span><span class="na">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">plan</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3"></a>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="w">  </span><span class="nb">plan_options</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w">    </span><span class="na">refresh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7"></a>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="w">  </span><span class="nb">assert</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9"></a><span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nv">var.environment</span><span class="w"> </span><span class="p">==</span><span class="w"> </span><span class="s2">&quot;dev&quot; &amp;&amp; data.aws_caller_identity.current.account_id == &quot;954976300695&quot;) ? true : (var.environment == &quot;prod&quot; &amp;&amp; data.aws_caller_identity.current.account_id == &quot;816069156152&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="no">true</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="no">false</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Dev must be deployed to the 954976300695 account! Prod must be deployed to the 816069156152 account!&quot;</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12"></a>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13"></a><span class="w">  </span><span class="na">expect_failures</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14"></a><span class="w">    </span><span class="nv">check.grafana_health_check</span>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>This test ensures we are deploying to the correct AWS account based on the environment that we are working on. We say run this as a <code>plan</code> test, specifically not to refresh the state (which OpenTofu does when you run a <code>tofu plan</code>) as it's not used in this test.</p>
+<p>You can also see an <code>expect_failures</code> argument here too, which tells the test expect this <code>check</code> block to fail, which is actually our check block checking Grafana is available. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the <code>check</code> block is not in scope of the <code>tests</code> directory in <code>tofu/</code> it still checks the check block (pardon the pun) which was annoying as technically the <code>check</code> block isn't even in scope of the tests <code>tofu test</code> is meant to run. But for now this is how it works.</p>
+</div>
+<h2 id="plan">Plan</h2>
+<p>The next part of the core OpenTofu workflow is planning to check what changes it wants to make.</p>
+<h3 id="plan-file">Plan File</h3>
+<p>Throughout this Minicamp we create the plan file but don't actually use it when it comes to the <code>tofu apply</code> - we could do this using the upload artifact and download artifact GitHub Actions but in general it is best practice to encrypt it as it may contain sensitive information, or anything you might "deem" sensitive. You can actually do this in OpenTofu itself now natively, it's one of the key differentiators when compared directly with Terraform. The benefit of the plan file approach is that OpenTofu doesn't do another <code>plan</code> when you <code>apply</code>. When you specify <code>--auto-approve</code> OpenTofu generates another plan and then executes it. This has two potential issues:</p>
+<ol>
+<li>Speed - Using the plan file from the <code>plan</code> step you can execute the changes much quicker as there's no need for a second "plan".</li>
+<li>Guarantee of Changes - Depending on the time gap between the plan running and then someone approving the workflow to apply the changes, someone could have made some manual changes that were not captured in that first plan. Normally if you execute an <code>apply</code> right after the <code>plan</code> this is unlikely, but sometimes you might go a few hours or potentially days if you waiting to do a change based on any change management process.</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>One of the aims for further steps is to implement the plan file workflow approach!</p>
+</div>
+<h2 id="apply">Apply</h2>
+<p>We take the output of the plan, and then make a decision on whether we want to tell OpenTofu to attempt to deploy those "planned" changes.</p>
+<h2 id="destroy">Destroy</h2>
+<p>Once we're done with the infrastructure, we will destroy it! Now this step isn't normally part of the core OpenTofu workflow officially; it's just Write, Plan and Apply. Obviously if the infrastructure was serving an actual service that end customers pay for, it's a different story, but this is a Minicamp. Cost control has taken over the industry by storm, with terms used that you might be aware of like FinOps. There's even a FinOps Foundation: <a href="https://www.finops.org/">https://www.finops.org/</a>. </p>
+<p>I personally believe that cost should be everyone's responsibility, although you might not be typically involved as an engineer in finance. However, engineers ultimately deploy the infrastructure that creates the bills! Typically cost is reactive, I mean, once you get your bill it's basically too late. Instead we should be more proactive, and tools such as Infracost are one way where we can govern cost <em>before</em> the changes are made to infrastructure.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Kieran Lowe
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.action.edit", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "navigation.instant", "navigation.instant.progress", "navigation.indexes", "navigation.expand", "navigation.top", "navigation.sections", "toc.integrate", "toc.follow"], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.83f73b43.min.js"></script>
+      
+    
+  </body>
+</html>
