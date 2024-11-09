@@ -46,6 +46,13 @@ jobs:
       pull-requests: write
     uses: ./.github/workflows/linters.yml
 
+  terraform-docs:
+    uses: ./.github/workflows/terraform_docs.yml
+    with:
+      config_file: ".terraform-docs.yml"
+      directory: "tofu"
+      tfdoc_version: "v0.19.0"
+
   infracost:
     runs-on: ubuntu-latest
     permissions:
@@ -92,10 +99,3 @@ jobs:
                                       --pull-request=${{ github.event.pull_request.number }} \
                                       --behavior=update \
                                       --policy-path ./policies/cost.rego
-
-  terraform-docs:
-    uses: ./.github/workflows/terraform_docs.yml
-    with:
-      config_file: ".terraform-docs.yml"
-      directory: "tofu"
-      tfdoc_version: "v0.19.0"
