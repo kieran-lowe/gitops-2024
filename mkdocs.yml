@@ -1,10 +1,11 @@
-site_name: MTC GitOps Bootcamp 2024
+site_name: MTC GitOps Minicamp 2024
 site_author: Kieran Lowe
-site_description: Documentation for the GitOps Bootcamp 2024
-site_url: https://kieran-lowe.github.io/gitops-bootcamp-2024/
+site_description: Documentation for the GitOps minicamp 2024
+site_url: https://kieran-lowe.github.io/gitops-2024/
 repo_name: kieran-lowe/gitops-bootcamp-2024
-repo_url: https://github.com/kieran-lowe/gitops-bootcamp-2024
+repo_url: https://github.com/kieran-lowe/gitops-2024
 edit_uri: edit/main/docs
+copyright: Kieran Lowe
 
 plugins:
   - search
@@ -17,6 +18,10 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 theme:
   name: material
   logo: assets/logo.png
@@ -28,6 +33,15 @@ theme:
     - search.suggest
     - search.highlight
     - content.code.copy
+    - content.code.annotate
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.indexes
+    - navigation.expand
+    - navigation.top
+    - navigation.sections
+    - toc.integrate
+    - toc.follow
   palette:
     - scheme: slate
       toggle:
@@ -39,3 +53,36 @@ theme:
         name: Light Mode
 extra: 
   homepage: https://kieranlowe.io
+extra_css:
+  - stylesheets/extra.css
+nav:
+  - Home: index.md
+  - AWS Account Structure: aws_accounts.md
+  - OpenTofu Workflow: tofu_workflow.md
+  - What's Next?: whats_next.md
+
+  - GitHub Action Workflows:
+    - github_action_workflows/index.md
+    - PR: github_action_workflows/pr.md
+    - Tofu Checks: github_action_workflows/tofu_checks.md
+    - Tofu Plan: github_action_workflows/tofu_plan.md
+    - SAST Checks: github_action_workflows/sast.md
+    - Linter Checks: github_action_workflows/linters.md
+    - Terraform Docs Check: github_action_workflows/terraform_docs.md
+    - Infracost: github_action_workflows/infracost.md
+
+    - Tofu Apply: github_action_workflows/tofu_apply.md
+    - Tofu Destroy: github_action_workflows/tofu_destroy.md
+    - Tofu Drift Check: github_action_workflows/drift_check.md
+    - Port Check: github_action_workflows/port_check.md
+    - Generate Documentation: github_action_workflows/mkdocs.md
+
+  - Repository:
+    - Code of Conduct: repository/code_of_conduct.md
+    - Contributing: repository/contributing.md
+
+    - Merging Strategy: repository/merging_strategy.md
+    - Repo Settings: repository/repo_settings.md
+    - Repo Structure: repository/repo_structure.md
+    - Toolchain: repository/toolchain.md
+
