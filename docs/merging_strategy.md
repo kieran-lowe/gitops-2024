@@ -1,1 +1,0 @@
-# Merging Strategy
