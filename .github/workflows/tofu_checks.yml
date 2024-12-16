@@ -29,7 +29,7 @@ jobs:
             ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Configure OpenTofu
-        uses: opentofu/setup-opentofu@12f4debbf681675350b6cd1f0ff8ecfbda62027b # v1.0.4
+        uses: opentofu/setup-opentofu@592200bd4b9bbf4772ace78f887668b1aee8f716 # v1.0.5
 
       - name: Print Tofu Version
         run: tofu --version
@@ -47,7 +47,7 @@ jobs:
             ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Configure OpenTofu
-        uses: opentofu/setup-opentofu@12f4debbf681675350b6cd1f0ff8ecfbda62027b # v1.0.4
+        uses: opentofu/setup-opentofu@592200bd4b9bbf4772ace78f887668b1aee8f716 # v1.0.5
 
       - name: Print Tofu Version
         run: tofu --version
@@ -70,7 +70,7 @@ jobs:
             ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Configure OpenTofu
-        uses: opentofu/setup-opentofu@12f4debbf681675350b6cd1f0ff8ecfbda62027b # v1.0.4
+        uses: opentofu/setup-opentofu@592200bd4b9bbf4772ace78f887668b1aee8f716 # v1.0.5
 
       - name: Print Tofu Version
         run: tofu --version
