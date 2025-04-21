@@ -17,7 +17,7 @@ jobs:
             ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Run Checkov
-        uses: bridgecrewio/checkov-action@e13ed1fd0f03094b3dcb4389c2f46ef4df9292b1 # v12
+        uses: bridgecrewio/checkov-action@e36cf905bc021e37d00c062474c325c1b31fa5f9 # v12
         with:
           config_file: .checkov.yml
   trivy:
