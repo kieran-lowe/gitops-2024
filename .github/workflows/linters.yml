@@ -44,7 +44,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Run cspell
-        uses: streetsidesoftware/cspell-action@ad35d5e5f85f4690dadb33f568e4b963d6a358f0 # v7.1.0
+        uses: streetsidesoftware/cspell-action@76c6f6d52abd57f4bcab5f3fde1bbd4f19a99eb0 # v7.2.1
         with:
           files: .*/**/*.md
           config: .cspell.yml
